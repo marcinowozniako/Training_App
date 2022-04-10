@@ -38,3 +38,6 @@ class TrainingPlan(models.Model):
     reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
     pace_of_exercise = models.CharField(max_length=4)
     rest_between_sets = models.IntegerField()
+
+    def __str__(self):
+        return self.exercise_name.name
