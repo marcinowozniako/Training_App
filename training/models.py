@@ -7,6 +7,9 @@ class Exercises(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
+    def __str__(self):
+        return self.name
+
 
 class DayName(models.Model):
     day_name = models.SmallIntegerField(choices=Days.CHOICES)
@@ -18,8 +21,11 @@ class DayName(models.Model):
 
 class Training(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     exercises = models.ManyToManyField('Exercises', through='TrainingPlan')
+
+    def __str__(self):
+        return self.name
 
 
 class TrainingPlan(models.Model):
@@ -32,7 +38,3 @@ class TrainingPlan(models.Model):
     reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
     pace_of_exercise = models.CharField(max_length=4)
     rest_between_sets = models.IntegerField()
-
-
-
-
