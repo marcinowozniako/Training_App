@@ -36,10 +36,12 @@ class CreateTrainingPlanView(CreateExerciseView):
     success_url = reverse_lazy('training:create-training-plan')
 
 
-class ListTrainingPlanView(ListView):
+class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.TrainingPlan
     template_name = 'training/list.html'
     permission_required = 'training.view_trainingplan'
+    login_url = reverse_lazy('users:login')
+
 
 
 class DetailExerciseView(DetailView):
@@ -58,7 +60,10 @@ class WorkoutUpdateView(UpdateView):
     model = models.WorkoutSet
     fields = '__all__'
     template_name = 'training/workoutset_list.html'
+    success_url = reverse_lazy('training:workout-list')
 
 
-class WorkoutListView(ListView):
+class WorkoutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.WorkoutSet
+    permission_required = 'training.view_workoutset'
+    login_url = reverse_lazy('users:login')

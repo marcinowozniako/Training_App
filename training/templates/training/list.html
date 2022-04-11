@@ -16,8 +16,8 @@
                 <tr class="d-flex">
                     <th class="col-3">Training Name: {{ training.grouper }}</th>
                     <th class="col-2 text-center">Number of Sets</th>
-                    <th class="col-1 text-center">Reps</th>
-                    <th class="col-1 text-center">Pace</th>
+                    <th class="col-2 text-center">Reps</th>
+                    <th class="col-2 text-center">Pace</th>
                     <th class="col-2 text-center">Rest Between Sets</th>
                 </tr>
                 </thead>
@@ -28,12 +28,12 @@
                     <tr class="d-flex">
                         <td class="col-3">{{ order.exercise_name.name }}</td>
                         <td class="col-2 text-center">{{ order.number_of_sets }}</td>
-                        <td class="col-1 text-center">{{ order.reps }}</td>
-                        <td class="col-1 text-center">{{ order.pace_of_exercise }}</td>
+                        <td class="col-2 text-center">{{ order.reps }}</td>
+                        <td class="col-2 text-center">{{ order.pace_of_exercise }}</td>
                         <td class="col-2 text-center">{{ order.rest_between_sets }} s</td>
-                        <td class="col-4 center">
+                        <td class="col-5 center">
                             <a href="{% url 'training:exercise-detail' order.exercise_name.id %}"
-                               class="btn btn-info rounded-0 text-light m-1">Details</a>
+                               class="btn btn-primary rounded-0 text-light m-1">Details</a>
                         </td>
                     </tr>
                 {% endfor %}
