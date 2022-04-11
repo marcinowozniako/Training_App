@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView
+from django.utils import timezone
+from django.views.generic import CreateView, DetailView, UpdateView, ListView
 
 from . import models
 
@@ -35,15 +36,29 @@ class CreateTrainingPlanView(CreateExerciseView):
     success_url = reverse_lazy('training:create-training-plan')
 
 
-class ListTrainingPlanView(CreateTrainingPlanView):
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['planlist'] = models.TrainingPlan.objects.all().order_by('training__name', 'order')
-        return ctx
-
+class ListTrainingPlanView(ListView):
+    model = models.TrainingPlan
     template_name = 'training/list.html'
     permission_required = 'training.view_trainingplan'
 
 
 class DetailExerciseView(DetailView):
     model = models.Exercises
+
+
+class WorkoutView(CreateExerciseView):
+    model = models.WorkoutSet
+    fields = '__all__'
+    template_name = 'training/workout.html'
+    permission_required = 'training.add_workoutset'
+    success_url = reverse_lazy('training:workout-list')
+
+
+class WorkoutUpdateView(UpdateView):
+    model = models.WorkoutSet
+    fields = '__all__'
+    template_name = 'training/workoutset_list.html'
+
+
+class WorkoutListView(ListView):
+    model = models.WorkoutSet

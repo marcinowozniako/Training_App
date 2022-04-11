@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+    Workout
+    {% endblock %}
+    {% block container %}
+        <h1>Workout Log</h1>
+      {% if messages %}
+
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
+
+        <form action="" method="post">
+
+
+        {% csrf_token %}
+
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-primary">Add</button>
+
+        </form>
+
+
+{% endblock %}

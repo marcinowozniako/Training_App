@@ -20,14 +20,14 @@ class Days:
 
 class RepUnit:
     CHOICES = (
-        ('RE', 'Reps'),
-        ('SE', 'Seconds'),
-        ('UF', 'Until Failure'),
+        ('Reps', 'Reps'),
+        ('Seconds', 'Seconds'),
+        ('Until Failure', 'Until Failure'),
     )
 
 
 class WeightUnit:
     CHOICES = (
-        ('KG', 'Kg'),
-        ('BW', 'Body Weight'),
+        ('Kg', 'Kg'),
+        ('Body Weight', 'Body Weight'),
         )

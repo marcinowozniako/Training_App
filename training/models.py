@@ -42,7 +42,7 @@ class TrainingPlan(models.Model):
     training = models.ForeignKey('Training', on_delete=models.CASCADE)
     number_of_sets = models.IntegerField(default=3)
     reps = models.PositiveIntegerField()
-    reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
+    reps_unit = models.CharField(max_length=25, choices=RepUnit.CHOICES)
     pace_of_exercise = models.CharField(max_length=4, blank=True)
     rest_between_sets = models.IntegerField()
 
@@ -53,9 +53,13 @@ class TrainingPlan(models.Model):
 class WorkoutSet(models.Model):
     day = models.ForeignKey('DayName', on_delete=models.CASCADE)
     exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
+    # order = models.ForeignKey('TrainingPlan', on_delete=models.CASCADE, blank=True, null=True)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
-    reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
+    reps_unit = models.CharField(max_length=25, choices=RepUnit.CHOICES)
     weight = models.DecimalField(max_digits=4, decimal_places=2)
     total_weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    weight_unit = models.CharField(max_length=2, choices=WeightUnit.CHOICES)
+    weight_unit = models.CharField(max_length=15, choices=WeightUnit.CHOICES)
+
+    class Meta:
+        ordering = ['exercise']

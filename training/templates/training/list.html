@@ -10,11 +10,11 @@
     <h1>Training Plan</h1>
     <div class="accordion accordion-flush" id="accordionFlushExample">
         <table class="table">
-            {% regroup planlist by training as days %}
+            {% regroup object_list by training as days %}
             {% for training in days %}
                 <thead>
                 <tr class="d-flex">
-                    <th class="col-3">{{ training.grouper }}</th>
+                    <th class="col-3">Training Name: {{ training.grouper }}</th>
                     <th class="col-2 text-center">Number of Sets</th>
                     <th class="col-1 text-center">Reps</th>
                     <th class="col-1 text-center">Pace</th>

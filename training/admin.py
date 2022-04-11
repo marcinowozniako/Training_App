@@ -5,7 +5,7 @@ from . import models
 
 
 @admin.register(models.Exercises)
-class ExercisesAdmin(AdminVideoMixin,admin.ModelAdmin):
+class ExercisesAdmin(AdminVideoMixin, admin.ModelAdmin):
     list_display = ('name', 'description', 'video')
 
 
@@ -30,5 +30,19 @@ class TrainingPlanAdmin(admin.ModelAdmin):
         'reps_unit',
         'pace_of_exercise',
         'rest_between_sets',
-                    )
+    )
+
+
+@admin.register(models.WorkoutSet)
+class WorkoutSetAdmin(admin.ModelAdmin):
+    list_display = (
+        'sets',
+        'reps',
+        'reps_unit',
+        'weight',
+        'total_weight',
+        'weight_unit',
+        'day',
+        'exercise',
+    )
 
