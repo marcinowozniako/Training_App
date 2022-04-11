@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'crispy_forms',
     'crispy_bootstrap5',
+    'embed_video',
 
     # local
     'home.apps.HomeConfig',

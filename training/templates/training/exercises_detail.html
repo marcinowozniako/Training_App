@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load embed_video_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+    Exercise Detail
+    {% endblock %}
+    {% block container %}
+        <h1>Exercise Detail</h1>
+        <table class="table borderless">
+                    <tbody>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Name of Exercise</th>
+                        <td class="col-7">
+                            {{ object.name }}
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Description</th>
+                        <td class="col-7">{{ object.description }}
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">Video</th>
+                        <td class="col-7">{% video object.video 'tiny' %}
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+{% endblock %}

@@ -24,3 +24,10 @@ class RepUnit:
         ('SE', 'Seconds'),
         ('UF', 'Until Failure'),
     )
+
+
+class WeightUnit:
+    CHOICES = (
+        ('KG', 'Kg'),
+        ('BW', 'Body Weight'),
+        )

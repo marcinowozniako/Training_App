@@ -1,7 +1,11 @@
+from django.apps import apps
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from training.apps import TrainingConfig
 from . import forms
 
 
@@ -12,7 +16,19 @@ def registration_view(request):
             user = form.save(commit=False)
             user.is_active = True
             user.save()
-            return redirect(reverse('home:home'))
+            group_app, created = Group.objects.get_or_create(name=TrainingConfig.name)
+
+            models = apps.all_models[TrainingConfig.name]
+            for model in models:
+                content_type = ContentType.objects.get(
+                    app_label=TrainingConfig.name,
+                    model=model
+                )
+                permissions = Permission.objects.filter(content_type=content_type)
+                user.groups.add(group_app)
+                group_app.permissions.add(*permissions)
+
+            return redirect(reverse('users:login'))
     return render(request, 'users/registration.html', {'form': form})
 
 

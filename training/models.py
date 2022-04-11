@@ -1,11 +1,16 @@
 from django.db import models
+from embed_video.fields import EmbedVideoField
 
-from training.enums import Days, RepUnit
+from training.enums import Days, RepUnit, WeightUnit
 
 
 class Exercises(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    video = EmbedVideoField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['id']
 
     def __str__(self):
         return self.name
@@ -24,6 +29,9 @@ class Training(models.Model):
     description = models.TextField(blank=True, null=True)
     exercises = models.ManyToManyField('Exercises', through='TrainingPlan')
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.name
 
@@ -32,12 +40,22 @@ class TrainingPlan(models.Model):
     exercise_name = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     order = models.IntegerField()
     training = models.ForeignKey('Training', on_delete=models.CASCADE)
-    day_name = models.ForeignKey('DayName', on_delete=models.CASCADE)
     number_of_sets = models.IntegerField(default=3)
     reps = models.PositiveIntegerField()
     reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
-    pace_of_exercise = models.CharField(max_length=4)
+    pace_of_exercise = models.CharField(max_length=4, blank=True)
     rest_between_sets = models.IntegerField()
 
     def __str__(self):
         return self.exercise_name.name
+
+
+class WorkoutSet(models.Model):
+    day = models.ForeignKey('DayName', on_delete=models.CASCADE)
+    exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
+    sets = models.PositiveIntegerField()
+    reps = models.PositiveIntegerField()
+    reps_unit = models.CharField(max_length=2, choices=RepUnit.CHOICES)
+    weight = models.DecimalField(max_digits=4, decimal_places=2)
+    total_weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    weight_unit = models.CharField(max_length=2, choices=WeightUnit.CHOICES)

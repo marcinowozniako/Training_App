@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load embed_video_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+    Exercise Detail
+    {% endblock %}
+    {% block container %}
+        <h1>You need to be logged to view this site!!</h1>
+        <p>Don't have an account? <a href="{% url 'users:register' %}">Sign Up</a></p>
+        <p>Already have an account? <a href="{% url 'users:login' %}">Log In</a></p>
+
+{% endblock %}

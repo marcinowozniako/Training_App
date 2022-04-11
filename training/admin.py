@@ -1,11 +1,12 @@
 from django.contrib import admin
+from embed_video.admin import AdminVideoMixin
 
 from . import models
 
 
 @admin.register(models.Exercises)
-class ExercisesAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+class ExercisesAdmin(AdminVideoMixin,admin.ModelAdmin):
+    list_display = ('name', 'description', 'video')
 
 
 @admin.register(models.DayName)
@@ -24,10 +25,10 @@ class TrainingPlanAdmin(admin.ModelAdmin):
         'exercise_name',
         'order',
         'training',
-        'day_name',
         'number_of_sets',
         'reps',
         'reps_unit',
         'pace_of_exercise',
         'rest_between_sets',
                     )
+

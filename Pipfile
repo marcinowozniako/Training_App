@@ -9,6 +9,7 @@ psycopg2-binary = "*"
 pytest = "*"
 django-debug-toolbar = "*"
 crispy-bootstrap5 = "*"
+django-embed-video = "*"
 
 [dev-packages]
 
