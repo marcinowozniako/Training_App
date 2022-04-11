@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView
 
 from . import models
 
 
-class CreateExerciseView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class CreateExerciseView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = models.Exercises
     fields = '__all__'
     template_name = 'training/create_exercise.html'
@@ -14,10 +17,8 @@ class CreateExerciseView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
     login_url = reverse_lazy('users:login')
     raise_exception = False
     success_url = reverse_lazy('training:create-exercise')
-
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
+    permission_denied_message = 'You dont have required Permission to view this site'
+    success_message = 'Data Successfully added!'
 
 
 class CreateTrainingView(CreateExerciseView):

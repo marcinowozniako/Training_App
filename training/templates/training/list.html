@@ -4,10 +4,10 @@
 
 
 {% block title %}
-    List of Plans
+    Training Plan
     {% endblock %}
     {% block container %}
-        <h1>List of Plans</h1>
+        <h1>Training Plan</h1>
         <table class="table">
                 {% regroup planlist by day_name as days%}
                 {% for day_name in days %}

@@ -3,10 +3,17 @@
 
 
 {% block title %}
-    Create Training Plan
+    Add Workout
     {% endblock %}
     {% block container %}
-        <h1>Add new Training Plan</h1>
+        <h1>Add Workout</h1>
+              {% if messages %}
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
 
         <form action="" method="post">
 

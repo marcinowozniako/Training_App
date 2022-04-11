@@ -9,13 +9,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Training Log{% block title %}{% endblock %}</title>
     {% block sripts %}
+        {% if messages %}
+        <script src="{% static 'scripts/messages.js' %}" defer async></script>
+        {% endif %}
         <script src="{% static 'scripts/bootstrap.min.js' %}" defer async></script>
     {% endblock %}
     {% block styles %}
         <link rel="stylesheet" href="{% static 'styles/main.css' %}">
-        <link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
-
-
+{#        <link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">#}
     {% endblock %}
 </head>
 <body>
