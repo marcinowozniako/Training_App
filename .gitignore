@@ -6,6 +6,5 @@ venv
 media/images
 
 **/*.pyc
-
 env/.env
 

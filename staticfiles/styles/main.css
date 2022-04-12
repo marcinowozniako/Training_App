@@ -4,7 +4,6 @@
     width: 2rem;
     height: 2rem;
 }
-
 .fade{
-    transition:opacity .45s linear
+    transition:opacity .85s linear
 }
