@@ -16,7 +16,7 @@ class DayAdmin(admin.ModelAdmin):
 
 @admin.register(models.Training)
 class TrainingAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'owner',)
 
 
 @admin.register(models.TrainingPlan)
@@ -30,6 +30,7 @@ class TrainingPlanAdmin(admin.ModelAdmin):
         'reps_unit',
         'pace_of_exercise',
         'rest_between_sets',
+        'owner',
     )
 
 
@@ -44,5 +45,7 @@ class WorkoutSetAdmin(admin.ModelAdmin):
         'weight_unit',
         'day',
         'exercise',
+        'date',
+        'owner',
     )
 
