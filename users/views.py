@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -41,8 +42,10 @@ def login_view(request):
             password = form.cleaned_data.get('password')
 
             user = authenticate(username=username, password=password)
+
             if user.is_active:
                 login(request, user)
+                messages.success(request, 'Login Successfully!')
                 return redirect(reverse('home:home'))
     else:
         form = forms.LoginForm()
@@ -52,4 +55,5 @@ def login_view(request):
 
 def logout_user(request):
     logout(request)
-    return redirect(reverse('users:login'))
+    messages.success(request, 'Logout Successfully! ')
+    return redirect(reverse('home:home'))

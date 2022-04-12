@@ -33,7 +33,7 @@ class Training(models.Model):
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['id']
+        ordering = ['owner']
 
     def __str__(self):
         return self.name
@@ -55,13 +55,13 @@ class TrainingPlan(models.Model):
 
 
 class WorkoutSet(models.Model):
-    date = models.DateField(null=True)
+    date = models.DateField(null=True, blank=True)
     day = models.ForeignKey('DayName', on_delete=models.CASCADE)
     exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
     reps_unit = models.CharField(max_length=25, choices=RepUnit.CHOICES)
-    weight = models.DecimalField(max_digits=4, decimal_places=2)
+    weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     total_weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     weight_unit = models.CharField(max_length=15, choices=WeightUnit.CHOICES)
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)

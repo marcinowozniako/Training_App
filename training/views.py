@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from django.contrib import messages, admin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
@@ -38,9 +41,6 @@ class CreateTrainingView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequ
 
 
 class CreateTrainingPlanView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    def get_queryset(self):
-        return self.model.objects.filter(owner__training=self.request.user)
-
     model = models.TrainingPlan
     fields = ('exercise_name', 'order', 'training', 'number_of_sets', 'reps', 'reps_unit', 'pace_of_exercise',
               'rest_between_sets')
@@ -54,6 +54,11 @@ class CreateTrainingPlanView(SuccessMessageMixin, LoginRequiredMixin, Permission
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=None)
+        form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
+        return form
 
 
 class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -87,12 +92,18 @@ class WorkoutView(CreateExerciseView):
         return super().form_valid(form)
 
 
-class WorkoutUpdateView(UpdateView):
+class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
     model = models.WorkoutSet
-    fields = '__all__'
+    fields = ('day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
     template_name = 'training/workoutset_list.html'
     success_url = reverse_lazy('training:workout-list')
     raise_exception = True
+    success_message = 'Edit successfully!'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        form.instance.date = time.strftime("%Y-%m-%d")
+        return super().form_valid(form)
 
 
 class WorkoutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):

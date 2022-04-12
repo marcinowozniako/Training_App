@@ -17,46 +17,38 @@
  {% endif %}
     {% if object %}
     <form method="post">{% csrf_token %}
-    {{ form|crispy }}
     <table class="table">
     <thead>
                 <tr class="d-flex">
-                    <th class="col-11 text-center" ><h2>{{ object.day }}</h2></th>
-                </tr>
-                </thead>
-                <thead>
-                <tr class="d-flex">
-                    <th class="col-3">Exercise name</th>
-                    <th class="col-2 text-center">Sets</th>
-                    <th class="col-2 text-center">Reps</th>
-                    <th class="col-2 text-center">Weight</th>
-                    <th class="col-2 text-center">Total Weight</th>
+                    <th class="col-11 text-center" ><h2>{{ form.day|as_crispy_field }}</h2></th>
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
-
-                    <tr class="d-flex">
-                        <td class="col-3">{{ object.exercise.name }}</td>
-                        <td class="col-2 text-center">{{ object.sets }}</td>
-                        <td class="col-2 text-center">{{ object.reps }} {{ object.reps_unit }}</td>
-                        <td class="col-2 text-center">{{ object.weight }}{{ object.weight_unit }}</td>
-                        <td class="col-2 text-center">{% if object.total_weight %}{{ object.total_weight }}{{ object.weight_unit }}{% endif %}</td>
-                        <td class="col-4 center"><input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1"></td>
-{#                        <td class="col-4 center">#}
-{#                            <a href="{% url 'training:workout-edit' exercise.id %}"#}
-{#                               class="btn btn-info rounded-0 text-light m-1">Edit</a>#}
-{#                        </td>#}
+                <tr class="d-flex">
+                        <td class="col-3 text-center">{{ form.exercise|as_crispy_field }}</td>
+                        <td class="col-2 text-center">{{ form.sets|as_crispy_field }}</td>
+                        <td class="col-2 text-center">{{ form.reps|as_crispy_field  }}</td>
+                        <td class="col-2 text-center">{{ form.weight|as_crispy_field }}</td>
+                        <td class="col-2 text-center">{% if form.total_weight %}{{ form.total_weight|as_crispy_field }}{% endif %}</td>
+                    <div class="d-none">
+                        <div class="d-none">
+                        <input type="hidden" value="{{ form.reps_unit|as_crispy_field }}">
+                        <div class="d-none">
+                        <input type="hidden" value="{{ form.weight_unit|as_crispy_field }}">
+                            <div class="d-none">
+                        <input type="hidden" value="{{ form.day|as_crispy_field }}"></div></div></div></div>
+                        <td class="d-flex align-items-center"><input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1"></td>
                     </tr>
                 </tbody>
     </table>
     </form>
     {% endif %}
     <table class="table">
-            {% regroup workoutset_list by day as days %}
-            {% for day in days %}
+            {% regroup workoutset_list by date as days %}
+            {% for date in days %}
                 <thead>
                 <tr class="d-flex">
-                    <th class="col-11 text-center" ><h2>{{ day.grouper }}</h2></th>
+                    <th class="col-11 text-center" ><h2>{{ date.grouper }}{% for exercise in date.list %} {{ exercise.day }}</h2></th>
                 </tr>
                 </thead>
                 <thead>
@@ -69,13 +61,13 @@
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
-                {% for exercise in day.list %}
+
 
                     <tr class="d-flex">
                         <td class="col-3">{{ exercise.exercise.name }}</td>
                         <td class="col-2 text-center">{{ exercise.sets }}</td>
                         <td class="col-2 text-center">{{ exercise.reps }} {{ exercise.reps_unit }}</td>
-                        <td class="col-2 text-center">{{ exercise.weight }}{{ exercise.weight_unit }}</td>
+                        <td class="col-2 text-center">{% if exercise.weight %}{{ exercise.weight }}{% endif %}{{ exercise.weight_unit }}</td>
                         <td class="col-2 text-center">{% if exercise.total_weight %}{{ exercise.total_weight }}{{ exercise.weight_unit }}{% endif %}</td>
                         <td class="col-4 center">
                             <a href="{% url 'training:workout-edit' exercise.id %}"
