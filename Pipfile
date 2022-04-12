@@ -10,6 +10,7 @@ pytest = "*"
 django-debug-toolbar = "*"
 crispy-bootstrap5 = "*"
 django-embed-video = "*"
+gunicorn = "*"
 
 [dev-packages]
 

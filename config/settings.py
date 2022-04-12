@@ -26,10 +26,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split()
 INTERNAL_IPS = ALLOWED_HOSTS
 
-# Application definition
+# Application definitiongit statu
 
 INSTALLED_APPS = [
     'django.contrib.admin',
