@@ -67,6 +67,6 @@ class WorkoutSet(models.Model):
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['exercise']
+        ordering = ['date']
 
 

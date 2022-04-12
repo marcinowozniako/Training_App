@@ -20,12 +20,12 @@
     <table class="table">
     <thead>
                 <tr class="d-flex">
-                    <th class="col-11 text-center" ><h2>{{ form.day|as_crispy_field }}</h2></th>
+                    <th class="col-12 text-center" ><h2>{{ form.day|as_crispy_field }}</h2></th>
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
                 <tr class="d-flex">
-                        <td class="col-3 text-center">{{ form.exercise|as_crispy_field }}</td>
+                        <td class="col-4 text-center">{{ form.exercise|as_crispy_field }}</td>
                         <td class="col-2 text-center">{{ form.sets|as_crispy_field }}</td>
                         <td class="col-2 text-center">{{ form.reps|as_crispy_field  }}</td>
                         <td class="col-2 text-center">{{ form.weight|as_crispy_field }}</td>
@@ -37,10 +37,10 @@
                         <input type="hidden" value="{{ form.weight_unit|as_crispy_field }}">
                             <div class="d-none">
                         <input type="hidden" value="{{ form.day|as_crispy_field }}"></div></div></div></div>
-                        <td class="d-flex align-items-center"><input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1"></td>
                     </tr>
                 </tbody>
     </table>
+    <input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1">
     </form>
     {% endif %}
     <table class="table">
@@ -48,7 +48,11 @@
             {% for date in days %}
                 <thead>
                 <tr class="d-flex">
-                    <th class="col-11 text-center" ><h2>{{ date.grouper }}{% for exercise in date.list %} {{ exercise.day }}</h2></th>
+                    <th class="col-11 text-center" ><h2>{{ date.grouper }}
+                        {% regroup date.list by day as dayd %}
+                        {% for day in dayd %}{{ day.grouper }}{% endfor %}
+
+                    </h2></th>
                 </tr>
                 </thead>
                 <thead>
@@ -61,7 +65,7 @@
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
-
+                {% for exercise in date.list %}
 
                     <tr class="d-flex">
                         <td class="col-3">{{ exercise.exercise.name }}</td>
