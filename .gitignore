@@ -2,7 +2,7 @@
 .vscode
 venv
 
-staticfiles/*
+
 media/images
 
 **/*.pyc
