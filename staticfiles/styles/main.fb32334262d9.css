@@ -1,9 +1,0 @@
-@import url("bootstrap.min.9cbf0d96c3e6.css");
-
-.logo {
-    width: 2rem;
-    height: 2rem;
-}
-.fade{
-    transition:opacity .85s linear
-}
