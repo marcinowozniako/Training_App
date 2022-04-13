@@ -12,6 +12,7 @@ crispy-bootstrap5 = "*"
 django-embed-video = "*"
 gunicorn = "*"
 whitenoise = "*"
+django-heroku = "*"
 
 [dev-packages]
 

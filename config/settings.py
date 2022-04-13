@@ -15,6 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import dj_database_url
 from django.conf.global_settings import DATABASES
+import django_heroku
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,7 +145,6 @@ STATICFILES_FINDERS = [
 MEDIA_URL = 'https://lms-pro.s3.amazonaws.com/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -158,3 +158,8 @@ LOGIN_REDIRECT_URL = 'home:home'
 LOGOUT_REDIRECT_URL = 'home:home'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Configure Django App for Heroku.
+
+
+django_heroku.settings(locals())
