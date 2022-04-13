@@ -8,7 +8,7 @@ from training.enums import Days, RepUnit, WeightUnit
 
 class Exercises(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     video = EmbedVideoField(null=True, blank=True)
 
     class Meta:
@@ -68,6 +68,9 @@ class WorkoutSet(models.Model):
     total_weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     weight_unit = models.CharField(max_length=15, choices=WeightUnit.CHOICES)
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.exercise.name
 
     class Meta:
         ordering = ['date']

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load embed_video_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}
+    Delete Exercise from Training Plan
+    {% endblock %}
+    {% block container %}
+        <h1>Are you Sure you want to delete: <br> {{ object }} ?</h1>
+
+                    <form method="post">{% csrf_token %}
+        {{ form|crispy }}
+                    <input type="submit" value="Detele" class="btn btn-danger rounded-0 text-light m-1">
+                    </form>
+
+{% endblock %}

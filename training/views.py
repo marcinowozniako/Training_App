@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, UpdateView, ListView
+from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView
 
 from . import models
 
@@ -72,8 +72,34 @@ class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     raise_exception = True
 
 
+class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):
+    model = models.TrainingPlan
+    fields = ('exercise_name', 'order', 'training', 'number_of_sets', 'reps', 'reps_unit', 'pace_of_exercise',
+              'rest_between_sets')
+    success_message = 'Edit successfully!'
+    success_url = reverse_lazy('training:list')
+    template_name = 'training/list.html'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class DeleteTrainingPlanView(SuccessMessageMixin, DeleteView):
+    model = models.TrainingPlan
+    success_url = reverse_lazy('training:list')
+    success_message = 'Delete successfully!'
+
+
 class DetailExerciseView(DetailView):
     model = models.Exercises
+
+
+class UpdateExerciseView(SuccessMessageMixin, UpdateView):
+    model = models.Exercises
+    fields = '__all__'
+    success_message = 'Edit successfully!'
+    success_url = reverse_lazy('training:list')
 
 
 class WorkoutView(CreateExerciseView):
@@ -114,3 +140,10 @@ class WorkoutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.WorkoutSet
     permission_required = 'training.view_workoutset'
     raise_exception = True
+
+
+class DeleteExerciseWorkoutView(SuccessMessageMixin, DeleteView):
+    model = models.WorkoutSet
+    success_message = 'Delete successfully!'
+    template_name = 'training/trainingplan_confirm_delete.html'
+    success_url = reverse_lazy('training:workout-list')
