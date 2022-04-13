@@ -63,7 +63,7 @@ class CreateTrainingPlanView(SuccessMessageMixin, LoginRequiredMixin, Permission
 
 class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self):
-        return self.model.objects.filter(owner=self.request.user)
+        return self.model.objects.filter(owner=self.request.user).order_by('training', 'order')
 
     model = models.TrainingPlan
     template_name = 'training/list.html'
@@ -108,7 +108,8 @@ class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
 
 class WorkoutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     def get_queryset(self):
-        return self.model.objects.filter(owner=self.request.user)
+        return self.model.objects.filter(owner=self.request.user).order_by('date', 'exercise__training',
+                                                                           'exercise__trainingplan__order')
 
     model = models.WorkoutSet
     permission_required = 'training.view_workoutset'

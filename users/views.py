@@ -28,7 +28,7 @@ def registration_view(request):
                 permissions = Permission.objects.filter(content_type=content_type)
                 user.groups.add(group_app)
                 group_app.permissions.add(*permissions)
-
+            messages.success(request, 'Register Successfully!')
             return redirect(reverse('users:login'))
     return render(request, 'users/registration.html', {'form': form})
 

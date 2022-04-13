@@ -33,7 +33,7 @@ class Training(models.Model):
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['owner']
+        ordering = ['id']
 
     def __str__(self):
         return self.name
@@ -52,6 +52,9 @@ class TrainingPlan(models.Model):
 
     def __str__(self):
         return self.exercise_name.name
+
+    class Meta:
+        ordering = ['training']
 
 
 class WorkoutSet(models.Model):
