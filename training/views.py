@@ -1,6 +1,9 @@
 import datetime
 import time
+from datetime import timedelta, date
 
+import django_select2
+from django import forms
 from django.contrib import messages, admin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
@@ -8,9 +11,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
+from django.views.generic.dates import WeekMixin
+from django_select2.forms import Select2Widget
 
 from . import models
+from .models import WorkoutSet
 
 
 class CreateExerciseView(SuccessMessageMixin, LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -113,6 +119,12 @@ class WorkoutView(CreateExerciseView):
     success_url = reverse_lazy('training:workout-list')
     raise_exception = True
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['date'].widget = forms.TextInput(attrs={'type': 'date'})
+        # form.fields['exercise'].widget = Select2Widget
+        return form
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
@@ -128,7 +140,6 @@ class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        form.instance.date = time.strftime("%Y-%m-%d")
         return super().form_valid(form)
 
 
@@ -140,6 +151,7 @@ class WorkoutListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.WorkoutSet
     permission_required = 'training.view_workoutset'
     raise_exception = True
+    paginate_by = 7
 
 
 class DeleteExerciseWorkoutView(SuccessMessageMixin, DeleteView):

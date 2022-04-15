@@ -13,6 +13,7 @@ django-embed-video = "*"
 gunicorn = "*"
 whitenoise = "*"
 django-heroku = "*"
+django-select2 = "*"
 
 [dev-packages]
 

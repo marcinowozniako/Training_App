@@ -1,17 +1,4 @@
-if (document.title==='Training Log Workout'){
-    const date = document.getElementById('id_date')
-date.type = 'date'
-}
+$('#id_exercise').select2()
+$('#id_exercise_name').select2()
+$('#select2-id_exercise_name-container').css('font-size', '1.25rem')
 
-// if (document.title==='Training Log Add Workout'){
-//     const order = document.getElementsByClassName('numberinput')[0]
-//     const submit = document.getElementsByClassName('btn-primary')[0]
-//     // submit.addEventListener('click', function (event){
-//     //     order.value += 1
-//     // })
-//         function auto(n) {
-//             n += 1;
-//             return n;
-//     }
-//     order.value = auto(0)
-//     }

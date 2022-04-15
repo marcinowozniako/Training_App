@@ -1,4 +1,5 @@
 @import 'bootstrap.min.css';
+@import "select2.css";
 
 .logo {
     width: 2rem;
@@ -7,3 +8,11 @@
 .fade{
     transition:opacity .85s linear
 }
+.select2-results__options{
+    max-height: 30rem !important;
+}
+
+
+/*.select2-selection__rendered{*/
+/*    font-size: 1.25rem;*/
+/*}*/

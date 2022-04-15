@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'embed_video',
+    'django_select2',
 
     # local
     'home.apps.HomeConfig',

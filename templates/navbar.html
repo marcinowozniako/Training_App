@@ -15,6 +15,7 @@
       <a class="nav-link" href="{% url 'training:list' %}">Current Training Plan</a>
       <a class="nav-link" href="{% url 'training:workout'%}">Add Workout</a>
       <a class="nav-link" href="{% url 'training:workout-list'%}">Workout List</a>
+      <a class="nav-link" href="{% url 'admin:index'%}">Admin</a>
           {% if user.is_authenticated %}
 
         <a class="nav-link" href="">Profile: {{ user }}</a>

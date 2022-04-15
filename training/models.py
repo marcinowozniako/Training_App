@@ -1,3 +1,6 @@
+import datetime
+import time
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -58,8 +61,8 @@ class TrainingPlan(models.Model):
 
 
 class WorkoutSet(models.Model):
-    date = models.DateField(null=True, blank=True)
-    day = models.ForeignKey('DayName', on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True, default=time.strftime("%Y-%m-%d"))
+    day = models.ForeignKey('DayName', on_delete=models.CASCADE, default=datetime.datetime.today().weekday()+1)
     exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()

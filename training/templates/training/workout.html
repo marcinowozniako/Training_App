@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
-
 {% block title %}
     Workout
     {% endblock %}
@@ -23,9 +21,10 @@
 
         {{ form|crispy }}
 
+{#            {{ form.exercise|as_crispy_field }}#}
+
         <button type="submit" class="btn btn-primary">Add</button>
 
         </form>
-
 
 {% endblock %}
