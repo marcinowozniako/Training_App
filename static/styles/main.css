@@ -11,6 +11,9 @@
 .select2-results__options{
     max-height: 30rem !important;
 }
+.select2-container{
+    width: 100% !important;
+}
 
 
 /*.select2-selection__rendered{*/

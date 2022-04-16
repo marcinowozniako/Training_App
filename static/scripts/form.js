@@ -1,4 +1,7 @@
 $('#id_exercise').select2()
 $('#id_exercise_name').select2()
-$('#select2-id_exercise_name-container').css('font-size', '1.25rem')
+if(document.title=== 'Add Exercises to Trening'){
+    $('#select2-id_exercise_name-container').css('font-size', '1.25rem')
+}
+
 

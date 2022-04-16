@@ -26,9 +26,9 @@
             {% for training in days %}
                 <thead>
                 <tr class="d-flex">
-                    <th class="col-4">Training Name: {{ training.grouper }}</th>
-                    <th class="col-2 text-center">Number of Sets</th>
-                    <th class="col-2 text-center">Reps</th>
+                    <th class="col-3">Training Name: {{ training.grouper }}</th>
+                    <th class="col-1 text-center">Sets</th>
+                    <th class="col-1 text-center">Reps</th>
                     <th class="col-2 text-center">Pace</th>
                     <th class="col-2 text-center">Rest Between Sets</th>
                 </tr>
@@ -38,9 +38,9 @@
                 {% for order in training.list %}
 
                     <tr class="d-flex">
-                        <td class="col-4">{{ order.exercise_name.name }}</td>
-                        <td class="col-2 text-center">{{ order.number_of_sets }}</td>
-                        <td class="col-2 text-center">{{ order.reps }}</td>
+                        <td class="col-3">{{ order.exercise_name.name }}</td>
+                        <td class="col-1 text-center">{{ order.number_of_sets }}</td>
+                        <td class="col-1 text-center">{{ order.reps }}</td>
                         <td class="col-2 text-center">{{ order.pace_of_exercise }}</td>
                         <td class="col-2 text-center">{{ order.rest_between_sets }} s</td>
                         <td class="col-1 center">
@@ -61,5 +61,4 @@
             </tbody>
 
         </table>
-    </div>
 {% endblock %}
