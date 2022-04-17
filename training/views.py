@@ -1,11 +1,11 @@
-import urllib
-
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
+from django.views.generic.edit import FormMixin
+from extra_views import ModelFormSetView, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory, \
+    FormSetView
 
 from . import models
 
@@ -37,8 +37,10 @@ class CreateTrainingView(CreateExerciseView):
 
 class CreateTrainingPlanView(CreateExerciseView):
     model = models.TrainingPlan
-    fields = ('exercise_name', 'order', 'training', 'number_of_sets', 'reps', 'reps_unit', 'pace_of_exercise',
-              'rest_between_sets')
+    fields = (
+        'training_plan_nb', 'exercise_name', 'order', 'training', 'number_of_sets', 'reps', 'reps_unit',
+        'pace_of_exercise',
+        'rest_between_sets',)
 
     template_name = 'training/create_training_plan.html'
     permission_required = 'training.add_trainingplan'
@@ -51,6 +53,8 @@ class CreateTrainingPlanView(CreateExerciseView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class=None)
         form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
+        form.fields['order'].widget = forms.NumberInput(attrs={'min': 1})
+        form.fields['training_plan_nb'].widget = forms.NumberInput(attrs={'min': 1})
         return form
 
 
@@ -63,6 +67,22 @@ class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     permission_required = 'training.view_trainingplan'
     login_url = reverse_lazy('users:login')
     raise_exception = True
+
+    # form_class = forms.E
+    #
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ctx['training_id'] = models.TrainingPlan.objects.filter(owner=self.request.user, training_plan_nb_id=2).order_by(
+            'training', 'order')
+        ctx['current_plan'] = models.TrainingPlan.objects.filter(owner=self.request.user, training_plan_nb_id=1).first()
+        return ctx
+
+
+class TrainingPlanChoiceView(ModelFormSetView):
+    def get_queryset(self):
+        return self.model.objects.filter(id=1)
+    model = models.TrainingPlanName
+    fields = ('training_plan_name',)
 
 
 class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):

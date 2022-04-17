@@ -4,15 +4,15 @@
 
 
 {% block title %}
-    Delete Exercise from Training Plan
+    Choose Plan
     {% endblock %}
     {% block container %}
-        <h1>Are you Sure you want to delete: <br> {{ object }} ?</h1>
+        <h1>Choose Training Plan</h1>
 
                     <form method="post">{% csrf_token %}
         {{ form|crispy }}
                     <input type="submit" value="Delete" class="btn btn-danger rounded-0 text-light m-1">
-                    <input type="hidden" name="next" value="{{ id }}">
+
                     </form>
 
 {% endblock %}

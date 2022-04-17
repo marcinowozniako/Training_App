@@ -19,33 +19,43 @@
 
 
         {% csrf_token %}
-
-            <table class="table">
-                <tbody class="text-color-lighter">
-                <tr class="d-flex">
-                    <td class="col-12 text-center " ><h3>{{ form.exercise_name|as_crispy_field }}</h3></td>
-                </tr>
-                </tbody>
-                <tbody class="text-color-lighter">
-                <tr class="d-flex">
-                        <td class="col-1 text-center">{{ form.order|as_crispy_field }}</td>
-                        <td class="col-2 text-center">{{ form.training|as_crispy_field }}</td>
-                        <td class="col-2 text-center">{{ form.number_of_sets|as_crispy_field }}</td>
-                        <td class="col-1 text-center">{{ form.reps|as_crispy_field }}</td>
-                        <td class="col-2 text-center">{{ form.reps_unit|as_crispy_field  }}</td>
-                        <td class="col-2 text-center">{{ form.pace_of_exercise|as_crispy_field }}</td>
-                        <td class="col-2 text-center">{{ form.rest_between_sets|as_crispy_field }}</td>
-                    </tr>
-                </tbody>
-    </table>
-
-{#        {{ form.order|as_crispy_field }}#}
-{#            {{ form.exercise_name|as_crispy_field }}#}
-{#            {{ form.training|as_crispy_field }}#}
-
-        <button type="submit" class="btn btn-primary">Add</button>
-
+            {{ form|crispy }}
+{##}
+{#            <table class="table">#}
+{#                <tbody class="text-color-lighter">#}
+{#                <tr class="d-flex">#}
+{#                    <td class="col-12 text-center " ><h3>{{ form.exercise_name|as_crispy_field }}</h3></td>#}
+{#                </tr>#}
+{#                </tbody>#}
+{#                <tbody class="text-color-lighter">#}
+{#                <tr class="d-flex">#}
+{#                    <td class="col-2 text-center">{{ form.training_plan_id|as_crispy_field }}</td>#}
+{#                        <td class="col-1 text-center">{{ form.order|as_crispy_field }}</td>#}
+{#                        <td class="col-2 text-center">{{ form.training|as_crispy_field }}</td>#}
+{#                        <td class="col-2 text-center">{{ form.number_of_sets|as_crispy_field }}</td>#}
+{#                        <td class="col-1 text-center">{{ form.reps|as_crispy_field }}</td>#}
+{#                        <td class="col-2 text-center">{{ form.reps_unit|as_crispy_field  }}</td>#}
+{#                        <td class="col-2 text-center">{{ form.pace_of_exercise|as_crispy_field }}</td>#}
+{##}
+{#                    </tr>#}
+{#                </tbody>#}
+{#    </table>#}
+            <button type="submit" class="btn btn-primary">Add</button>
         </form>
-
-
-{% endblock %}
+    {% endblock %}
+{#{% block aside %}#}
+{#    <table>#}
+{#        <tbody>#}
+{#        <tr>#}
+{#            <td>                </td>#}
+{#        </tr>#}
+{#        </tbody>#}
+{#    </table>#}
+{#    <table class="table d-inline-flex">#}
+{#    <tbody class="text-color-lighter">#}
+{#    <tr class="d-flex">#}
+{#    <td class="col-6 text-center">{{ form.rest_between_sets|as_crispy_field }}</td>#}
+{#    </tr>#}
+{#    </tbody>#}
+{#    </table>#}
+{#{% endblock %}#}

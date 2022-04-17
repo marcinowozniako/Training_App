@@ -7,7 +7,17 @@
     Training Plan
 {% endblock %}
 {% block container %}
-    <h1>Training Plan</h1>
+    <h1 class="text-center">Training Plan: {{ current_plan.training_plan_nb.training_plan_name }}</h1>
+    <form method="post">{% csrf_token %}
+    {{ formset }}
+    {% for formset in inlines %}
+    {{ formset }}
+  {% endfor %}
+    </form>
+{#    {% regroup object_list by training_plan_name as plan_day %}#}
+{#    {% for name in plan_day %}#}
+{#    #}
+{#    {% endfor %}#}
     {% if messages %}
      {% for message in messages %}
          <div class="text-center alert alert-{{ message.tags }}">
@@ -36,6 +46,7 @@
                 <tbody class="text-color-lighter">
 
                 {% for order in training.list %}
+
 
                     <tr class="d-flex">
                         <td class="col-3">{{ order.exercise_name.name }}</td>

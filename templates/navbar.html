@@ -16,6 +16,7 @@
       <a class="nav-link" href="{% url 'training:create-training' %}">Add Training</a>
       <a class="nav-link" href="{% url 'training:create-training-plan' %}">Add Exercises to Trening</a>
       <a class="nav-link" href="{% url 'training:list' %}">Current Training Plan</a>
+{#      <a class="nav-link" href="{% url 'training:plan-choice' object.id %}">Choose Current Training Plan</a>#}
       <a class="nav-link" href="{% url 'training:workout'%}">Add Workout</a>
       <a class="nav-link" href="{% url 'training:workout-list' cr_year cr_week %}">Workout List</a>
       {% if user.is_superuser %}
