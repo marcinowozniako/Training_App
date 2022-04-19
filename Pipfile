@@ -15,6 +15,7 @@ whitenoise = "*"
 django-heroku = "*"
 django-select2 = "*"
 django-extra-views = "*"
+django-filter = "*"
 
 [dev-packages]
 
