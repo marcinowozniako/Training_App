@@ -34,6 +34,7 @@ INTERNAL_IPS = ALLOWED_HOSTS
 # Application definitiongit statu
 
 INSTALLED_APPS = [
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
