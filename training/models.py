@@ -44,13 +44,14 @@ class Training(models.Model):
 
 class TrainingPlanName(models.Model):
     training_plan_name = models.CharField(max_length=256)
+    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.training_plan_name
 
 
 class TrainingPlan(models.Model):
-    training_plan_nb = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE, null=True)
+    training_plan_name = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE, null=True)
     exercise_name = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     order = models.IntegerField(default=1)
     training = models.ForeignKey('Training', on_delete=models.CASCADE)
@@ -69,14 +70,14 @@ class TrainingPlan(models.Model):
 
 
 class WorkoutSet(models.Model):
-    date = models.DateField(null=True, blank=True, default=time.strftime("%Y-%m-%d"))
+    date = models.DateField(default=time.strftime("%Y-%m-%d"))
     day = models.ForeignKey('DayName', on_delete=models.CASCADE, default=datetime.datetime.today().weekday() + 1)
     exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()
     reps_unit = models.CharField(max_length=25, choices=RepUnit.CHOICES)
-    weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    total_weight = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    weight = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    total_weight = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     weight_unit = models.CharField(max_length=15, choices=WeightUnit.CHOICES)
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 

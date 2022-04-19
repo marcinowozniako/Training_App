@@ -7,6 +7,7 @@ app_name = 'training'
 urlpatterns = [
     path('create-exercise', views.CreateExerciseView.as_view(), name='create-exercise'),
     path('create-training', views.CreateTrainingView.as_view(), name='create-training'),
+    path('create-training-plan-name', views.CreateTrainingPlanNameView.as_view(), name='create-training-plan-name'),
     path('create-training-plan', views.CreateTrainingPlanView.as_view(), name='create-training-plan'),
     path('list', views.ListTrainingPlanView.as_view(), name='list'),
     path('detail/<pk>', views.DetailExerciseView.as_view(), name='exercise-detail'),
@@ -17,6 +18,6 @@ urlpatterns = [
     path('list/edit/<pk>', views.TrainingPlanUpdateView.as_view(), name='training_plan-edit'),
     path('list/delete/<pk>', views.DeleteTrainingPlanView.as_view(), name='training_plan-delete'),
     path('workout/list/<year>/<week>/delete/<pk>', views.DeleteExerciseWorkoutView.as_view(), name='workout_ex-delete'),
-    path('choose-plan/', views.TrainingPlanChoiceView.as_view(), name='plan-choice'),
+    # path('choose-plan/', views.TrainingPlanChoiceView.as_view(), name='plan-choice'),
 
 ]

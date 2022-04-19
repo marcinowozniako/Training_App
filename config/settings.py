@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'embed_video',
     'django_select2',
     'extra_views',
+    'django_filters',
 
     # local
     'home.apps.HomeConfig',

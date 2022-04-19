@@ -7,12 +7,27 @@
     Training Plan
 {% endblock %}
 {% block container %}
-    <h1 class="text-center">Training Plan: {{ current_plan.training_plan_nb.training_plan_name }}</h1>
-    <form method="post">{% csrf_token %}
-    {{ formset }}
-    {% for formset in inlines %}
-    {{ formset }}
-  {% endfor %}
+    <h1 class="text-center">Training Plan</h1>
+    <form method="GET">
+{#    {{ user }}#}
+{#    {{ owner.owner }}#}
+{#    {{ filter.data }}#}
+
+{#    {% if user == owner.owner %}#}
+
+        {{ filter.form|crispy }}
+
+        {% if filter %}
+    <input type="submit" value="Choose" class="btn btn-primary rounded-0 text-light m-1">
+            <a href="{% url 'training:list' %}"
+                               class="btn btn-danger rounded-0 text-light m-1">Clear</a>
+
+    {% endif %}
+{#        {% else %}#}
+{#                <h3 class="text-center">There is no Training Plan Yet</h3>#}
+{#                <p class="text-center">Add new one: <a class="text-center" href="{% url 'training:create-training-plan' %}">Add Training</a></p>#}
+{#    {% endif %}#}
+
     </form>
 {#    {% regroup object_list by training_plan_name as plan_day %}#}
 {#    {% for name in plan_day %}#}
@@ -31,8 +46,9 @@
                     <input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1">
                     </form>
     {% endif %}
-        <table class="table">
-            {% regroup object_list by training as days %}
+{% if filter.data|length %}
+    <table class="table">
+            {% regroup filter.qs by training as days %}
             {% for training in days %}
                 <thead>
                 <tr class="d-flex">
@@ -68,8 +84,53 @@
                         </td>
                     </tr>
                 {% endfor %}
+                {% empty %}
+                <h3 class="text-center">There is no Training yet in this Training Plan</h3>
+                <p class="text-center">Add new one: <a class="text-center" href="{% url 'training:create-training-plan' %}">Add Training</a></p>
             {% endfor %}
             </tbody>
 
         </table>
+    {% endif %}
+{#        <table class="table">#}
+{#            {% regroup object_list by training as days %}#}
+{#            {% for training in days %}#}
+{#                <thead>#}
+{#                <tr class="d-flex">#}
+{#                    <th class="col-3">Training Name: {{ training.grouper }}</th>#}
+{#                    <th class="col-1 text-center">Sets</th>#}
+{#                    <th class="col-1 text-center">Reps</th>#}
+{#                    <th class="col-2 text-center">Pace</th>#}
+{#                    <th class="col-2 text-center">Rest Between Sets</th>#}
+{#                </tr>#}
+{#                </thead>#}
+{#                <tbody class="text-color-lighter">#}
+{##}
+{#                {% for order in training.list %}#}
+{##}
+{##}
+{#                    <tr class="d-flex">#}
+{#                        <td class="col-3">{{ order.exercise_name.name }}</td>#}
+{#                        <td class="col-1 text-center">{{ order.number_of_sets }}</td>#}
+{#                        <td class="col-1 text-center">{{ order.reps }}</td>#}
+{#                        <td class="col-2 text-center">{{ order.pace_of_exercise }}</td>#}
+{#                        <td class="col-2 text-center">{{ order.rest_between_sets }} s</td>#}
+{#                        <td class="col-1 center">#}
+{#                            <a href="{% url 'training:exercise-detail' order.exercise_name.id %}"#}
+{#                               class="btn btn-primary rounded-0 text-light m-1">Details</a>#}
+{#                        </td>#}
+{#                        <td class="col-1 center">#}
+{#                            <a href="{% url 'training:training_plan-delete' order.id %}"#}
+{#                               class="btn btn-danger rounded-0 text-light m-1">Delete</a>#}
+{#                        </td>#}
+{#                        <td class="col-1 center">#}
+{#                            <a href="{% url 'training:training_plan-edit' order.id %}"#}
+{#                               class="btn btn-success rounded-0 text-light m-1">Edit</a>#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#            {% endfor %}#}
+{#            </tbody>#}
+{##}
+{#        </table>#}
 {% endblock %}
