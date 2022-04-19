@@ -5,5 +5,3 @@ venv
 
 **/*.pyc
 env/.env
-
-staticfiles/*
