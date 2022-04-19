@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django_select2',
     'extra_views',
     'django_filters',
-    'django_heroku'
+    'django_heroku',
 
     # local
     'home.apps.HomeConfig',

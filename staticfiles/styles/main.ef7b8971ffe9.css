@@ -1,0 +1,21 @@
+@import url("bootstrap.min.9cbf0d96c3e6.css");
+@import url("select2.f939bc2aee8c.css");
+
+.logo {
+    width: 2rem;
+    height: 2rem;
+}
+.fade{
+    transition:opacity .85s linear
+}
+.select2-results__options{
+    max-height: 30rem !important;
+}
+.select2-container{
+    width: 100% !important;
+}
+
+
+/*.select2-selection__rendered{*/
+/*    font-size: 1.25rem;*/
+/*}*/
