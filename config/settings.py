@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
     # 3rd party
     'debug_toolbar',
-    'django_filters',
     'django_heroku',
     'crispy_forms',
     'crispy_bootstrap5',
