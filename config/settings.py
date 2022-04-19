@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'embed_video',
     'django_select2',
     'extra_views',
-    'django_filters',
 
 
     # local
@@ -147,8 +146,8 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# MEDIA_URL = 'https://lms-pro.s3.amazonaws.com/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'https://lms-pro.s3.amazonaws.com/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
