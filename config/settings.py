@@ -43,13 +43,14 @@ INSTALLED_APPS = [
 
     # 3rd party
     'debug_toolbar',
+    'django_heroku',
     'crispy_forms',
     'crispy_bootstrap5',
     'embed_video',
     'django_select2',
     'extra_views',
     'django_filters',
-    'django_heroku',
+
 
     # local
     'home.apps.HomeConfig',
@@ -166,4 +167,4 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Configure Django App for Heroku.
 
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
