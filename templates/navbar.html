@@ -20,11 +20,11 @@
       <a class="nav-link" href="{% url 'training:workout'%}">Add Workout</a>
       <a class="nav-link" href="{% url 'training:workout-list' cr_year cr_week %}">Workout List</a>
       {% if user.is_superuser %}
-{#      <a class="nav-link" href="{% url 'admin:index'%}">Admin</a>#}
+      <a class="nav-link" href="{% url 'admin:index'%}">Admin</a>
       {% endif %}
           {% if user.is_authenticated %}
 
-        <a class="nav-link" href="">Profile: {{ user }}</a>
+        <a class="nav-link">Profile: {{ user }}</a>
         <a class="nav-link" href="{% url 'users:logout' %}">Logout</a>
 
               {% else %}

@@ -137,10 +137,15 @@ class WorkoutView(CreateExerciseView):
 
 class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
     model = models.WorkoutSet
-    fields = ('day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
+    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
     template_name = 'training/workoutset_list.html'
     raise_exception = True
     success_message = 'Edit successfully!'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['date'].widget = forms.TextInput(attrs={'type': 'date'})
+        return form
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
