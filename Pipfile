@@ -16,6 +16,7 @@ django-heroku = "*"
 django-select2 = "*"
 django-extra-views = "*"
 django-filter = "*"
+pytest-django = "*"
 
 [dev-packages]
 
