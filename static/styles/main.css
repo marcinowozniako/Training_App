@@ -1,5 +1,5 @@
 @import 'bootstrap.min.css';
-@import "select2.css";
+@import "select2.min.css";
 
 .logo {
     width: 2rem;
