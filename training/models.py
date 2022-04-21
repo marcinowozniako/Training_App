@@ -51,7 +51,7 @@ class TrainingPlanName(models.Model):
 
 
 class TrainingPlan(models.Model):
-    training_plan_name = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE, null=True)
+    training_plan_name = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE)
     exercise_name = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     order = models.IntegerField(default=1)
     training = models.ForeignKey('Training', on_delete=models.CASCADE)

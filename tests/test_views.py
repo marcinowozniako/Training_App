@@ -3,8 +3,10 @@ import datetime
 import django
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib import auth
+from django.utils.http import urlencode
+from conftest import build_url
 
 import training.models
 
@@ -27,10 +29,10 @@ def test_login_user(created_user, client):
 
 
 def test_logout_user(created_user, client):
+    client.login(username='tester', password='ExamplePass')
     client.logout()
-    response = client.get('/users/logout')
 
-    assert response.status_code == 302
+    assert auth.get_user(client).is_anonymous
 
 
 def test_home_page(client):
@@ -57,13 +59,15 @@ def test_register_page(client):
     assert '<h1>Register</h1>' in response.content.decode('utf-8')
 
 
-def test_add_exercise_page(created_user, client):
+def test_add_exercise_page_not_logged(client):
     url = reverse('training:create-exercise')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_add_exercise_page_logged(created_user, client):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:create-exercise')
     response = client.get(url)
@@ -79,13 +83,15 @@ def test_add_exercise_page(created_user, client):
     assert training.models.Exercises.objects.all().count() == 1
 
 
-def test_add_training_page(created_user, client):
+def test_add_training_page_not_logged(client):
     url = reverse('training:create-training')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_add_training_page_logged(created_user, client):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:create-training')
     response = client.get(url)
@@ -101,13 +107,15 @@ def test_add_training_page(created_user, client):
     assert training.models.Training.objects.all().count() == 1
 
 
-def test_add_training_plan_page(created_user, client):
+def test_add_training_plan_name_page_not_logged(client):
     url = reverse('training:create-training-plan-name')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_add_training_plan_name_page_logged(created_user, client):
     client.login(username='tester', password='ExamplePass')
 
     url = reverse('training:create-training-plan-name')
@@ -122,53 +130,44 @@ def test_add_training_plan_page(created_user, client):
     assert training.models.TrainingPlanName.objects.all().count() == 1
 
 
-def test_create_training_plan_page(created_user, client):
+def test_create_training_plan_page_not_logged(client):
     url = reverse('training:create-training-plan')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_create_training_plan_page_logged(created_user, create_plan_name, create_training, create_exercise, client):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:create-training-plan')
     response = client.get(url)
 
     assert response.status_code == 200
 
-    # owner = django.contrib.auth.models.User(username='tester')
-    # owner = User.objects.create_superuser(username='admin', email='a@a.pl', password='aa')
-    # owner.save()
-    # auth.get_user(response.)
-    # owner = 3
-    # plan_name = training.models.TrainingPlanName.objects.create(training_plan_name='plan', owner_id=owner)
-    # plan_name.save()
-    # exercise = training.models.Exercises.objects.create(name='exercise')
-    # exercise.save()
-    # training_name = training.models.Training.objects.create(name='training', owner_id=owner)
-    # training_name.save()
-    #
-    # response = client.post(reverse('training:create-training-plan'), data={
-    #     'training_plan_name_id': plan_name.id,
-    #     'exercise_name_id': exercise.id,
-    #     'order': 1,
-    #     'training_id': training_name.id,
-    #     'number_of_sets': 3,
-    #     'reps': 10,
-    #     'reps_unit': 'Reps',
-    #     'rest_between_sets': 120,
-    #     'owner_id': owner,
-    # })
-    # # assert response.status_code == 302
-    # assert training.models.TrainingPlan.objects.all().count() == 1
+    response1 = client.post(reverse('training:create-training-plan'), data={
+        'training_plan_name': create_plan_name.id,
+        'exercise_name': create_exercise.id,
+        'order': 1,
+        'training': create_training.id,
+        'number_of_sets': 3,
+        'reps': 10,
+        'reps_unit': 'Reps',
+        'rest_between_sets': 120,
+    })
+    assert response1.status_code == 302
+    assert training.models.TrainingPlan.objects.all().count() == 1
 
 
-def test_current_training_plan_page(created_user, client):
+def test_current_training_plan_page_not_logged(client):
     url = reverse('training:list')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_current_training_plan_page_logged(created_user, create_training_plan, client):
     client.login(username='tester', password='ExamplePass')
 
     url = reverse('training:list')
@@ -176,14 +175,22 @@ def test_current_training_plan_page(created_user, client):
 
     assert response.status_code == 200
 
+    assert training.models.TrainingPlan.objects.all().count() == 1
+    url = build_url('training:list', params={'training_plan_name': 1})
+    response = client.get(url)
+    assert '<th class="col-3">Training Name: Training</th>' in response.content.decode('utf-8')
+    assert response.status_code == 200
 
-def test_add_workout_page(created_user, client):
+
+def test_add_workout_page_not_logged(client):
     url = reverse('training:workout')
     response = client.get(url)
 
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_add_workout_page_logged(created_user, client):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:workout')
     response = client.get(url)
@@ -191,7 +198,7 @@ def test_add_workout_page(created_user, client):
     assert response.status_code == 200
 
 
-def test_workout_list_page(created_user, client):
+def test_workout_list_page_not_logged(client):
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
@@ -199,9 +206,19 @@ def test_workout_list_page(created_user, client):
     assert response.status_code == 403
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
+
+def test_workout_list_page_logged(created_user, client):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+def test_delete_from_training_plane(created_user, client, create_training_plan):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_training_plan.id
+
+    response = client.post(reverse('training:training_plan-delete', kwargs={'pk': idx}))
+    assert response.status_code == 302
