@@ -100,6 +100,7 @@ class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView
     Verify that the current
     user has all specified permissions.
     """
+
     def get_queryset(self):
         return self.model.objects.filter(owner=self.request.user).order_by('training', 'order')
 
@@ -133,12 +134,18 @@ class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['id'] = self.request.META['HTTP_REFERER']
+        try:
+            ctx['id'] = self.request.META['HTTP_REFERER']
+        except KeyError:
+            ctx['id'] = reverse_lazy('home:home')
         return ctx
 
     def get_success_url(self):
-        self.success_url = self.request.POST.get('next')
-        return self.success_url.format(**self.object.__dict__)
+        try:
+            self.success_url = self.request.POST.get('next')
+            return self.success_url.format(**self.object.__dict__)
+        except AttributeError:
+            return reverse_lazy('home:home')
 
 
 class DeleteTrainingPlanView(SuccessMessageMixin, DeleteView):
@@ -168,16 +175,21 @@ class UpdateExerciseView(SuccessMessageMixin, UpdateView):
     model = models.Exercises
     fields = '__all__'
     success_message = 'Edit successfully!'
-    success_url = reverse_lazy('training:list')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['id'] = self.request.META['HTTP_REFERER']
+        try:
+            ctx['id'] = self.request.META['HTTP_REFERER']
+        except KeyError:
+            ctx['id'] = reverse_lazy('home:home')
         return ctx
 
     def get_success_url(self):
-        self.success_url = self.request.POST.get('next')
-        return self.success_url.format(**self.object.__dict__)
+        try:
+            self.success_url = self.request.POST.get('next')
+            return self.success_url.format(**self.object.__dict__)
+        except AttributeError:
+            return reverse_lazy('home:home')
 
 
 class WorkoutView(BaseCreateView):
@@ -243,6 +255,7 @@ class WorkoutListView(WeekArchiveView, PermissionRequiredMixin, ListView):
     Verify that the current
     user has all specified permissions.
     """
+
     def get_queryset(self):
         return self.model.objects.filter(owner=self.request.user).order_by('date', 'exercise__training',
                                                                            'exercise__trainingplan__order')

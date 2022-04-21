@@ -1,4 +1,5 @@
 import datetime
+import time
 
 import django
 from django.contrib.auth.models import User
@@ -145,7 +146,7 @@ def test_create_training_plan_page_logged(created_user, create_plan_name, create
 
     assert response.status_code == 200
 
-    response1 = client.post(reverse('training:create-training-plan'), data={
+    response = client.post(reverse('training:create-training-plan'), data={
         'training_plan_name': create_plan_name.id,
         'exercise_name': create_exercise.id,
         'order': 1,
@@ -155,7 +156,7 @@ def test_create_training_plan_page_logged(created_user, create_plan_name, create
         'reps_unit': 'Reps',
         'rest_between_sets': 120,
     })
-    assert response1.status_code == 302
+    assert response.status_code == 302
     assert training.models.TrainingPlan.objects.all().count() == 1
 
 
@@ -190,12 +191,23 @@ def test_add_workout_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_add_workout_page_logged(created_user, client):
+def test_add_workout_page_logged(created_user, client, create_exercise, create_day):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:workout')
     response = client.get(url)
 
     assert response.status_code == 200
+
+    response = client.post(reverse('training:workout'), data={
+        'date': time.strftime("%Y-%m-%d"),
+        'day': create_day.id,
+        'exercise': create_exercise.id,
+        'sets': 3,
+        'reps': 10,
+        'reps_unit': 'Reps',
+        'weight_unit': 'Kg',
+    })
+    assert response.status_code == 302
 
 
 def test_workout_list_page_not_logged(client):
@@ -216,9 +228,53 @@ def test_workout_list_page_logged(created_user, client):
     assert response.status_code == 200
 
 
+def test_detail_exercise_page_logged(create_exercise, client):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_exercise.id
+    url = reverse('training:exercise-detail', kwargs={'pk': idx})
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert '<th scope="row" class="col-2">Name of Exercise</th>' in response.content.decode('utf-8')
+
+
 def test_delete_from_training_plane(created_user, client, create_training_plan):
     client.login(username='tester', password='ExamplePass')
     idx = create_training_plan.id
 
     response = client.post(reverse('training:training_plan-delete', kwargs={'pk': idx}))
     assert response.status_code == 302
+
+
+def test_edit_training_plan_logged(created_user, create_training_plan, client):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_training_plan.id
+    assert training.models.TrainingPlan.objects.all().count() == 1
+
+    response_post = client.post(reverse('training:training_plan-edit', kwargs={'pk': idx}), data={
+        'training_plan_name': create_training_plan.training_plan_name.id,
+        'exercise_name': create_training_plan.exercise_name.id,
+        'order': 1,
+        'training': create_training_plan.training.id,
+        'number_of_sets': 4,
+        'reps': 10,
+        'reps_unit': 'Reps',
+        'rest_between_sets': 120,
+    })
+
+    assert response_post.status_code == 302
+    assert str(training.models.TrainingPlan.objects.values('number_of_sets')) == "<QuerySet [{'number_of_sets': 4}]>"
+
+
+def test_edit_exercise_logged(create_exercise, client, created_user):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_exercise.id
+
+    response = client.post(reverse('training:exercise-edit', kwargs={'pk': idx}), data={
+        'name': 'new_exercise'
+
+    })
+
+    assert response.status_code == 302
+    assert str(training.models.Exercises.objects.values('name')) == "<QuerySet [{'name': 'new_exercise'}]>"
+

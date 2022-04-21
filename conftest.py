@@ -66,3 +66,9 @@ def create_training_plan(created_user, db, create_training, create_plan_name, cr
         (training_plan_name=create_plan_name, exercise_name=create_exercise, order=1, training=create_training,
          number_of_sets=3, reps=10, reps_unit='Reps', rest_between_sets=120, owner=created_user)
     return training_plan
+
+
+@pytest.fixture
+def create_day():
+    days = training.models.DayName.objects.create(day_name=0, order=1)
+    return days
