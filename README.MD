@@ -1,2 +1,5 @@
-## App is a training log, you can add new exercises, create a new TrainingPlan 
+# Training App 
+App for creating Training Plans, and keeping logs from your workouts.
 
+## Demo Version:
+https://workout-log-ap.herokuapp.com/
