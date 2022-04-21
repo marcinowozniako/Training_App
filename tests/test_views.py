@@ -1,15 +1,12 @@
 import datetime
 import time
 
-import django
-from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
-from django.urls import reverse, reverse_lazy
 from django.contrib import auth
-from django.utils.http import urlencode
-from conftest import build_url
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 import training.models
+from conftest import build_url
 
 
 def test_registration_user(db, client):
@@ -219,13 +216,14 @@ def test_workout_list_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_workout_list_page_logged(created_user, client):
+def test_workout_list_page_logged(created_user, client, create_workout):
     client.login(username='tester', password='ExamplePass')
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
 
     assert response.status_code == 200
+    assert '<td class="col-3">exercise</td>' in response.content.decode('utf-8')
 
 
 def test_detail_exercise_page_logged(create_exercise, client):
@@ -278,3 +276,31 @@ def test_edit_exercise_logged(create_exercise, client, created_user):
     assert response.status_code == 302
     assert str(training.models.Exercises.objects.values('name')) == "<QuerySet [{'name': 'new_exercise'}]>"
 
+
+def test_delete_from_workout_list(created_user, client, create_workout):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_workout.id
+
+    response = client.post(
+        reverse('training:workout_ex-delete', kwargs={'year': datetime.datetime.now().isocalendar()[0],
+                                                      'week': datetime.datetime.now().isocalendar()[1], 'pk': idx}))
+    assert response.status_code == 302
+
+
+def test_edit_workout_object(created_user, client, create_workout, create_day, create_exercise):
+    client.login(username='tester', password='ExamplePass')
+    idx = create_workout.id
+
+    response = client.post(
+        reverse('training:workout-edit', kwargs={'year': datetime.datetime.now().isocalendar()[0],
+                                                 'week': datetime.datetime.now().isocalendar()[1], 'pk': idx}), data={
+            'date': time.strftime("%Y-%m-%d"),
+            'day': create_day.id,
+            'exercise': create_exercise.id,
+            'sets': 4,
+            'reps': 10,
+            'reps_unit': 'Reps',
+            'weight_unit': 'Kg',
+        })
+    assert response.status_code == 302
+    assert str(training.models.WorkoutSet.objects.values('sets')) == "<QuerySet [{'sets': 4}]>"

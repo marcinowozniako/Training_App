@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
 
 from . import models, filters
@@ -235,12 +234,18 @@ class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['id'] = self.request.META['HTTP_REFERER']
+        try:
+            ctx['id'] = self.request.META['HTTP_REFERER']
+        except KeyError:
+            ctx['id'] = reverse_lazy('home:home')
         return ctx
 
     def get_success_url(self):
-        self.success_url = self.request.POST.get('next')
-        return self.success_url.format(**self.object.__dict__)
+        try:
+            self.success_url = self.request.POST.get('next')
+            return self.success_url.format(**self.object.__dict__)
+        except AttributeError:
+            return reverse_lazy('home:home')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -283,9 +288,15 @@ class DeleteExerciseWorkoutView(SuccessMessageMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['id'] = self.request.META['HTTP_REFERER']
+        try:
+            ctx['id'] = self.request.META['HTTP_REFERER']
+        except KeyError:
+            ctx['id'] = reverse_lazy('home:home')
         return ctx
 
     def get_success_url(self):
-        self.success_url = self.request.POST.get('next')
-        return self.success_url.format(**self.object.__dict__)
+        try:
+            self.success_url = self.request.POST.get('next')
+            return self.success_url.format(**self.object.__dict__)
+        except AttributeError:
+            return reverse_lazy('home:home')

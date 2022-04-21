@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from django.apps import apps
 from django.contrib import auth
@@ -72,3 +74,11 @@ def create_training_plan(created_user, db, create_training, create_plan_name, cr
 def create_day():
     days = training.models.DayName.objects.create(day_name=0, order=1)
     return days
+
+
+@pytest.fixture
+def create_workout(created_user, create_exercise, create_day):
+    workout = training.models.WorkoutSet.objects.create \
+        (date=time.strftime("%Y-%m-%d"), day=create_day, exercise=create_exercise, sets=3, reps=10, reps_unit='Reps',
+         weight_unit='Kg', owner=created_user)
+    return workout
