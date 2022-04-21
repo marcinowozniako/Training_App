@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
 
 from . import models, filters
@@ -54,6 +55,7 @@ class CreateTrainingPlanNameView(BaseCreateView):
     model = models.TrainingPlanName
     fields = ('training_plan_name',)
     permission_required = 'training.add_trainingplanname'
+    success_url = reverse_lazy('training:create-training-plan-name')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
