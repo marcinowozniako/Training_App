@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
+from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
 
 from . import models, filters
@@ -80,13 +81,31 @@ class CreateTrainingPlanView(BaseCreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+
         return super().form_valid(form)
 
     def get_form(self, form_class=None):
+        url = reverse_lazy('training:create-training')
+        url1 = reverse_lazy('training:create-training-plan-name')
+        url3 = reverse_lazy('training:create-exercise')
         form = super().get_form(form_class=None)
-        form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
-        form.fields['training_plan_name'].queryset = form.fields['training_plan_name'].queryset.filter(
-            owner=self.request.user)
+        if form.fields['exercise_name'].queryset.all().count() >= 1:
+            form.fields['exercise_name'].queryset = form.fields['exercise_name'].queryset.all()
+        else:
+            form.fields['exercise_name'] = forms.ChoiceField(help_text=mark_safe(
+                f"<a href='{url3}'> You Need to Add Exercise First!</a>"), disabled=True)
+        if form.fields['training'].queryset.filter(owner=self.request.user).count() >= 1:
+            form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
+        else:
+            form.fields['training'] = forms.ChoiceField(help_text=mark_safe(
+                f"<a href='{url}'> You Need to Add Training First!</a>"), disabled=True)
+        if form.fields['training_plan_name'].queryset.filter(
+                owner=self.request.user).count() >= 1:
+            form.fields['training_plan_name'].queryset = form.fields['training_plan_name'].queryset.filter(
+                owner=self.request.user)
+        else:
+            form.fields['training_plan_name'] = forms.ChoiceField(help_text=mark_safe(
+                f"<a href='{url1}'> You Need to Add Training Plan Name First!</a>"), disabled=True)
         form.fields['order'].widget = forms.NumberInput(attrs={'min': 1})
         return form
 
@@ -199,7 +218,7 @@ class UpdateExerciseView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVie
             return reverse_lazy('home:home')
 
 
-class WorkoutView(BaseCreateView):
+class AddWorkoutView(BaseCreateView):
     """
     View for creating a new workout object, with a response rendered by a template.
     Verify that the current user has all specified permissions.
@@ -213,7 +232,13 @@ class WorkoutView(BaseCreateView):
     success_url = reverse_lazy('training:workout')
 
     def get_form(self, form_class=None):
+        url = reverse_lazy('training:create-exercise')
         form = super().get_form(form_class)
+        if form.fields['exercise'].queryset.all().count() >= 1:
+            form.fields['exercise'].queryset = form.fields['exercise'].queryset.all()
+        else:
+            form.fields['exercise'] = forms.ChoiceField(help_text=mark_safe(
+                f"<a href='{url}'> You Need to Add Exercise First!</a>"), disabled=True)
         form.fields['date'].widget = forms.TextInput(attrs={'type': 'date'})
         return form
 
