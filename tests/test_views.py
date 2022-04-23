@@ -1,6 +1,7 @@
 import datetime
 import time
 
+import pytest
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -9,25 +10,35 @@ import training.models
 from conftest import build_url
 
 
-def test_registration_user(db, client):
+@pytest.mark.parametrize('username, password1, password2, status_code, number', (
+        ('tester', 'ExamplePass', 'ExamplePass', 302, 1),
+        ('', 'ExamplePass', 'ExamplePass', 200, 0),
+        ('a', 'ExamplePass4', 'ExamplePass4', 200, 0),
+        ('tester1', 'ExamplePass1', 'ExamplePass1', 302, 1),
+        ('tester', 'password', 'password', 200, 0),
+        ('tester2', 'ExamplePass1', 'ExamplePass', 200, 0),
+        ('tester', 'ExamplePass', 'ExamplePass2', 200, 0),
+        ('tester4', '', 'ExamplePass2', 200, 0),
+        ('tester4', 'ExamplePass2', '', 200, 0),
+        ('tester4', '', '', 200, 0),
+        ('', '', '', 200, 0),
+))
+def test_registration_user(db, client, username, password1, password2, status_code, number):
     response = client.post(reverse('users:register'), data={
-        'username': 'tester123',
-        'password1': 'ExamplePass',
-        'password2': 'ExamplePass',
+        'username': username,
+        'password1': password1,
+        'password2': password2,
     })
 
-    assert response.status_code == 302
-    assert get_user_model().objects.all().count() == 1
+    assert response.status_code == status_code
+    assert get_user_model().objects.all().count() == number
 
 
-def test_login_user(created_user, client):
-    logged_in = client.login(username='tester', password='ExamplePass')
-
-    assert logged_in
+def test_login_user(created_user, client, log_in_user):
+    assert log_in_user
 
 
-def test_logout_user(created_user, client):
-    client.login(username='tester', password='ExamplePass')
+def test_logout_user(created_user, client, log_in_user):
     client.logout()
 
     assert auth.get_user(client).is_anonymous
@@ -65,8 +76,7 @@ def test_add_exercise_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_add_exercise_page_logged(created_user, client):
-    client.login(username='tester', password='ExamplePass')
+def test_add_exercise_page_logged(client, log_in_user):
     url = reverse('training:create-exercise')
     response = client.get(url)
 
@@ -89,8 +99,7 @@ def test_add_training_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_add_training_page_logged(created_user, client):
-    client.login(username='tester', password='ExamplePass')
+def test_add_training_page_logged(log_in_user, client):
     url = reverse('training:create-training')
     response = client.get(url)
 
@@ -113,9 +122,7 @@ def test_add_training_plan_name_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_add_training_plan_name_page_logged(created_user, client):
-    client.login(username='tester', password='ExamplePass')
-
+def test_add_training_plan_name_page_logged(log_in_user, client):
     url = reverse('training:create-training-plan-name')
     response = client.get(url)
 
@@ -136,8 +143,7 @@ def test_create_training_plan_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_create_training_plan_page_logged(created_user, create_plan_name, create_training, create_exercise, client):
-    client.login(username='tester', password='ExamplePass')
+def test_create_training_plan_page_logged(log_in_user, create_plan_name, create_training, create_exercise, client):
     url = reverse('training:create-training-plan')
     response = client.get(url)
 
@@ -165,9 +171,7 @@ def test_current_training_plan_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_current_training_plan_page_logged(created_user, create_training_plan, client):
-    client.login(username='tester', password='ExamplePass')
-
+def test_current_training_plan_page_logged(log_in_user, create_training_plan, client):
     url = reverse('training:list')
     response = client.get(url)
 
@@ -188,8 +192,7 @@ def test_add_workout_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_add_workout_page_logged(created_user, client, create_exercise, create_day):
-    client.login(username='tester', password='ExamplePass')
+def test_add_workout_page_logged(log_in_user, client, create_exercise, create_day):
     url = reverse('training:workout')
     response = client.get(url)
 
@@ -216,8 +219,7 @@ def test_workout_list_page_not_logged(client):
     assert '<h1>You need to be logged to view this site!!</h1>' in response.content.decode('utf-8')
 
 
-def test_workout_list_page_logged(created_user, client, create_workout):
-    client.login(username='tester', password='ExamplePass')
+def test_workout_list_page_logged(log_in_user, client, create_workout):
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
@@ -226,8 +228,7 @@ def test_workout_list_page_logged(created_user, client, create_workout):
     assert '<td class="col-3">exercise</td>' in response.content.decode('utf-8')
 
 
-def test_detail_exercise_page_logged(create_exercise, client):
-    client.login(username='tester', password='ExamplePass')
+def test_detail_exercise_page_logged(create_exercise, client, log_in_user):
     idx = create_exercise.id
     url = reverse('training:exercise-detail', kwargs={'pk': idx})
     response = client.get(url)
@@ -236,16 +237,15 @@ def test_detail_exercise_page_logged(create_exercise, client):
     assert '<th scope="row" class="col-2">Name of Exercise</th>' in response.content.decode('utf-8')
 
 
-def test_delete_from_training_plane(created_user, client, create_training_plan):
-    client.login(username='tester', password='ExamplePass')
+def test_delete_from_training_plane(log_in_user, client, create_training_plan):
     idx = create_training_plan.id
 
     response = client.post(reverse('training:training_plan-delete', kwargs={'pk': idx}))
     assert response.status_code == 302
+    assert training.models.TrainingPlan.objects.all().count() == 0
 
 
-def test_edit_training_plan_logged(created_user, create_training_plan, client):
-    client.login(username='tester', password='ExamplePass')
+def test_edit_training_plan_logged(log_in_user, create_training_plan, client):
     idx = create_training_plan.id
     assert training.models.TrainingPlan.objects.all().count() == 1
 
@@ -264,8 +264,7 @@ def test_edit_training_plan_logged(created_user, create_training_plan, client):
     assert str(training.models.TrainingPlan.objects.values('number_of_sets')) == "<QuerySet [{'number_of_sets': 4}]>"
 
 
-def test_edit_exercise_logged(create_exercise, client, created_user):
-    client.login(username='tester', password='ExamplePass')
+def test_edit_exercise_logged(create_exercise, client, log_in_user):
     idx = create_exercise.id
 
     response = client.post(reverse('training:exercise-edit', kwargs={'pk': idx}), data={
@@ -277,18 +276,17 @@ def test_edit_exercise_logged(create_exercise, client, created_user):
     assert str(training.models.Exercises.objects.values('name')) == "<QuerySet [{'name': 'new_exercise'}]>"
 
 
-def test_delete_from_workout_list(created_user, client, create_workout):
-    client.login(username='tester', password='ExamplePass')
+def test_delete_from_workout_list(log_in_user, client, create_workout):
     idx = create_workout.id
 
     response = client.post(
         reverse('training:workout_ex-delete', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                       'week': datetime.datetime.now().isocalendar()[1], 'pk': idx}))
     assert response.status_code == 302
+    assert training.models.WorkoutSet.objects.all().count() == 0
 
 
-def test_edit_workout_object(created_user, client, create_workout, create_day, create_exercise):
-    client.login(username='tester', password='ExamplePass')
+def test_edit_workout_object(log_in_user, client, create_workout, create_day, create_exercise):
     idx = create_workout.id
 
     response = client.post(

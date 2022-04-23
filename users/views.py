@@ -11,6 +11,11 @@ from . import forms
 
 
 def registration_view(request):
+    """
+    Registration View for new user.
+    If form is valid new user is added to group with all permissions required to
+    use the rest of views on the site, if group not exists, it will be created.
+    """
     form = forms.RegistrationForm(request.POST or None, request.FILES or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -34,6 +39,10 @@ def registration_view(request):
 
 
 def login_view(request):
+    """
+    View for login of new user, if form is valid user will be log in to site, if not
+    there will be messages on the site which will tell what is wrong.
+    """
     if request.method == 'POST':
         form = forms.LoginForm(request, request.POST)
 
@@ -54,6 +63,9 @@ def login_view(request):
 
 
 def logout_user(request):
+    """
+    Simple view for logout of user.
+    """
     logout(request)
     messages.success(request, 'Logout Successfully! ')
     return redirect(reverse('home:home'))

@@ -115,7 +115,7 @@ class ListTrainingPlanView(LoginRequiredMixin, PermissionRequiredMixin, ListView
         return ctx
 
 
-class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):
+class TrainingPlanUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
     """
     View for updating an object, with a response rendered by a template.
     If the form is valid, add the current logged user as owner and redirect to
@@ -126,6 +126,8 @@ class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):
               'rest_between_sets')
     success_message = 'Edit successfully!'
     template_name = 'training/list.html'
+    permission_required = 'training.change_trainingplan'
+    raise_exception = True
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -147,7 +149,7 @@ class TrainingPlanUpdateView(SuccessMessageMixin, UpdateView):
             return reverse_lazy('home:home')
 
 
-class DeleteTrainingPlanView(SuccessMessageMixin, DeleteView):
+class DeleteTrainingPlanView(SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """
     View for deleting an object retrieved with self.get_object(), with a
     response rendered by a template.
@@ -155,16 +157,20 @@ class DeleteTrainingPlanView(SuccessMessageMixin, DeleteView):
     model = models.TrainingPlan
     success_url = reverse_lazy('training:list')
     success_message = 'Delete successfully!'
+    permission_required = 'training.delete_trainingplan'
+    raise_exception = True
 
 
-class DetailExerciseView(DetailView):
+class DetailExerciseView(PermissionRequiredMixin, DetailView):
     """
     Render a "detail" view of an object.
     """
     model = models.Exercises
+    permission_required = 'training.view_exercises'
+    raise_exception = True
 
 
-class UpdateExerciseView(SuccessMessageMixin, UpdateView):
+class UpdateExerciseView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
     """
     View for updating an object, with a response rendered by a template.
     Add current url of site to context and redirect to
@@ -174,6 +180,8 @@ class UpdateExerciseView(SuccessMessageMixin, UpdateView):
     model = models.Exercises
     fields = '__all__'
     success_message = 'Edit successfully!'
+    permission_required = 'training.change_exercises'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -214,7 +222,7 @@ class WorkoutView(BaseCreateView):
         return super().form_valid(form)
 
 
-class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
+class WorkoutUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
     """
     View for updating an object, with a response rendered by a template.
     Change the type of field date for date.
@@ -226,6 +234,7 @@ class WorkoutUpdateView(SuccessMessageMixin, UpdateView):
     fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
     template_name = 'training/workoutset_list.html'
     success_message = 'Edit successfully!'
+    permission_required = 'training.change_workoutset'
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -275,7 +284,7 @@ class WorkoutListView(WeekArchiveView, PermissionRequiredMixin, ListView):
     allow_empty = True
 
 
-class DeleteExerciseWorkoutView(SuccessMessageMixin, DeleteView):
+class DeleteExerciseWorkoutView(SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """
     View for deleting an object retrieved with self.get_object(), with a
     response rendered by a template.
@@ -285,6 +294,8 @@ class DeleteExerciseWorkoutView(SuccessMessageMixin, DeleteView):
     model = models.WorkoutSet
     success_message = 'Delete successfully!'
     template_name = 'training/trainingplan_confirm_delete.html'
+    permission_required = 'training.delete_workoutset'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
