@@ -4,6 +4,7 @@ import time
 import pytest
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 
 import training.models
@@ -24,6 +25,9 @@ from conftest import build_url
         ('', '', '', 200, 0),
 ))
 def test_registration_user(db, client, username, password1, password2, status_code, number):
+    """
+    Test of registration form view with multiple data
+    """
     response = client.post(reverse('users:register'), data={
         'username': username,
         'password1': password1,
@@ -34,17 +38,24 @@ def test_registration_user(db, client, username, password1, password2, status_co
     assert get_user_model().objects.all().count() == number
 
 
-def test_login_user(created_user, client, log_in_user):
-    assert log_in_user
+def test_login_user(created_user, client):
+    """Test of login user"""
+    response = client.post(reverse('users:login'), data={
+        'username': created_user.username,
+        'password': 'ExamplePass',
+    })
+    assert response.status_code == 302
 
 
 def test_logout_user(created_user, client, log_in_user):
-    client.logout()
-
+    """Test of logout user"""
+    response = client.post(reverse('users:logout'))
+    assert response.status_code == 302
     assert auth.get_user(client).is_anonymous
 
 
 def test_home_page(client):
+    """Test to check if home page working"""
     url = reverse('home:home')
     response = client.get(url)
 
@@ -53,6 +64,7 @@ def test_home_page(client):
 
 
 def test_login_page(client):
+    """Test to check if login page working"""
     url = reverse('users:login')
     response = client.get(url)
 
@@ -61,6 +73,7 @@ def test_login_page(client):
 
 
 def test_register_page(client):
+    """Test to check if register page working"""
     url = reverse('users:register')
     response = client.get(url)
 
@@ -69,6 +82,7 @@ def test_register_page(client):
 
 
 def test_add_exercise_page_not_logged(client):
+    """Test to check if add_exercise page requires permissions to see """
     url = reverse('training:create-exercise')
     response = client.get(url)
 
@@ -77,6 +91,7 @@ def test_add_exercise_page_not_logged(client):
 
 
 def test_add_exercise_page_logged(client, log_in_user):
+    """Test to check if logged User can add new exercise by form on page"""
     url = reverse('training:create-exercise')
     response = client.get(url)
 
@@ -92,6 +107,7 @@ def test_add_exercise_page_logged(client, log_in_user):
 
 
 def test_add_training_page_not_logged(client):
+    """Test to check if add_training page requires permissions to see """
     url = reverse('training:create-training')
     response = client.get(url)
 
@@ -100,6 +116,7 @@ def test_add_training_page_not_logged(client):
 
 
 def test_add_training_page_logged(log_in_user, client):
+    """Test to check if logged User can add new training by form on page"""
     url = reverse('training:create-training')
     response = client.get(url)
 
@@ -115,6 +132,7 @@ def test_add_training_page_logged(log_in_user, client):
 
 
 def test_add_training_plan_name_page_not_logged(client):
+    """Test to check if add_training_plan_name page requires permissions to see """
     url = reverse('training:create-training-plan-name')
     response = client.get(url)
 
@@ -123,6 +141,7 @@ def test_add_training_plan_name_page_not_logged(client):
 
 
 def test_add_training_plan_name_page_logged(log_in_user, client):
+    """Test to check if logged User can add new training plan name by form on page"""
     url = reverse('training:create-training-plan-name')
     response = client.get(url)
 
@@ -136,6 +155,7 @@ def test_add_training_plan_name_page_logged(log_in_user, client):
 
 
 def test_create_training_plan_page_not_logged(client):
+    """Test to check if create_training_plan page requires permissions to see """
     url = reverse('training:create-training-plan')
     response = client.get(url)
 
@@ -144,6 +164,7 @@ def test_create_training_plan_page_not_logged(client):
 
 
 def test_create_training_plan_page_logged(log_in_user, create_plan_name, create_training, create_exercise, client):
+    """Test to check if logged User can create new training plan by form on page"""
     url = reverse('training:create-training-plan')
     response = client.get(url)
 
@@ -164,6 +185,7 @@ def test_create_training_plan_page_logged(log_in_user, create_plan_name, create_
 
 
 def test_current_training_plan_page_not_logged(client):
+    """Test to check if current_training_plan page requires permissions to see """
     url = reverse('training:list')
     response = client.get(url)
 
@@ -172,6 +194,7 @@ def test_current_training_plan_page_not_logged(client):
 
 
 def test_current_training_plan_page_logged(log_in_user, create_training_plan, client):
+    """Test to check if logged User can see current training plan on page"""
     url = reverse('training:list')
     response = client.get(url)
 
@@ -185,6 +208,7 @@ def test_current_training_plan_page_logged(log_in_user, create_training_plan, cl
 
 
 def test_add_workout_page_not_logged(client):
+    """Test to check if add_workout page requires permissions to see """
     url = reverse('training:workout')
     response = client.get(url)
 
@@ -193,6 +217,7 @@ def test_add_workout_page_not_logged(client):
 
 
 def test_add_workout_page_logged(log_in_user, client, create_exercise, create_day):
+    """Test to check if logged User can add new workout by form on page"""
     url = reverse('training:workout')
     response = client.get(url)
 
@@ -211,6 +236,7 @@ def test_add_workout_page_logged(log_in_user, client, create_exercise, create_da
 
 
 def test_workout_list_page_not_logged(client):
+    """Test to check if workout_list page requires permissions to see """
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
@@ -220,6 +246,7 @@ def test_workout_list_page_not_logged(client):
 
 
 def test_workout_list_page_logged(log_in_user, client, create_workout):
+    """Test to check if logged User can see added workout on page"""
     url = reverse('training:workout-list', kwargs={'year': datetime.datetime.now().isocalendar()[0],
                                                    'week': datetime.datetime.now().isocalendar()[1]})
     response = client.get(url)
@@ -229,6 +256,7 @@ def test_workout_list_page_logged(log_in_user, client, create_workout):
 
 
 def test_detail_exercise_page_logged(create_exercise, client, log_in_user):
+    """Test to check if logged User can see details of exercise on page"""
     idx = create_exercise.id
     url = reverse('training:exercise-detail', kwargs={'pk': idx})
     response = client.get(url)
@@ -238,6 +266,7 @@ def test_detail_exercise_page_logged(create_exercise, client, log_in_user):
 
 
 def test_delete_from_training_plane(log_in_user, client, create_training_plan):
+    """Test to check if logged User can delete exercise from training plan"""
     idx = create_training_plan.id
 
     response = client.post(reverse('training:training_plan-delete', kwargs={'pk': idx}))
@@ -246,6 +275,7 @@ def test_delete_from_training_plane(log_in_user, client, create_training_plan):
 
 
 def test_edit_training_plan_logged(log_in_user, create_training_plan, client):
+    """Test to check if logged User can edit exercise from training plan"""
     idx = create_training_plan.id
     assert training.models.TrainingPlan.objects.all().count() == 1
 
@@ -265,6 +295,7 @@ def test_edit_training_plan_logged(log_in_user, create_training_plan, client):
 
 
 def test_edit_exercise_logged(create_exercise, client, log_in_user):
+    """Test to check if logged User can edit exercise"""
     idx = create_exercise.id
 
     response = client.post(reverse('training:exercise-edit', kwargs={'pk': idx}), data={
@@ -277,6 +308,7 @@ def test_edit_exercise_logged(create_exercise, client, log_in_user):
 
 
 def test_delete_from_workout_list(log_in_user, client, create_workout):
+    """Test to check if logged User can delete exercise from workout list"""
     idx = create_workout.id
 
     response = client.post(
@@ -287,6 +319,7 @@ def test_delete_from_workout_list(log_in_user, client, create_workout):
 
 
 def test_edit_workout_object(log_in_user, client, create_workout, create_day, create_exercise):
+    """Test to check if logged User can edit exercise from workout list"""
     idx = create_workout.id
 
     response = client.post(
