@@ -4,7 +4,6 @@ import time
 import pytest
 from django.contrib import auth
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 
 import training.models
@@ -284,14 +283,14 @@ def test_edit_training_plan_logged(log_in_user, create_training_plan, client):
         'exercise_name': create_training_plan.exercise_name.id,
         'order': 1,
         'training': create_training_plan.training.id,
-        'number_of_sets': 4,
+        'number_of_sets': 5,
         'reps': 10,
         'reps_unit': 'Reps',
         'rest_between_sets': 120,
     })
 
     assert response_post.status_code == 302
-    assert str(training.models.TrainingPlan.objects.values('number_of_sets')) == "<QuerySet [{'number_of_sets': 4}]>"
+    assert training.models.TrainingPlan.objects.values('number_of_sets')[0].get('number_of_sets') == 5
 
 
 def test_edit_exercise_logged(create_exercise, client, log_in_user):
@@ -304,7 +303,8 @@ def test_edit_exercise_logged(create_exercise, client, log_in_user):
     })
 
     assert response.status_code == 302
-    assert str(training.models.Exercises.objects.values('name')) == "<QuerySet [{'name': 'new_exercise'}]>"
+
+    assert training.models.Exercises.objects.values('name')[0].get('name') == 'new_exercise'
 
 
 def test_delete_from_workout_list(log_in_user, client, create_workout):
@@ -334,4 +334,13 @@ def test_edit_workout_object(log_in_user, client, create_workout, create_day, cr
             'weight_unit': 'Kg',
         })
     assert response.status_code == 302
-    assert str(training.models.WorkoutSet.objects.values('sets')) == "<QuerySet [{'sets': 4}]>"
+    assert training.models.WorkoutSet.objects.values('sets')[0].get('sets') == 4
+
+
+def test_delete_training_plan_name(log_in_user, client, create_plan_name):
+    """Test to check if logged User can delete training plan"""
+    idx = create_plan_name.id
+
+    response = client.post(reverse('training:training_plan_name-delete', kwargs={'pk': idx}))
+    assert response.status_code == 302
+    assert training.models.TrainingPlanName.objects.all().count() == 0
