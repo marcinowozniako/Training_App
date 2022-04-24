@@ -336,3 +336,19 @@ class DeleteExerciseWorkoutView(SuccessMessageMixin, PermissionRequiredMixin, De
             return self.success_url.format(**self.object.__dict__)
         except AttributeError:
             return reverse_lazy('home:home')
+
+
+class DeleteTrainingPlanNameView(SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """
+    View for deleting an object retrieved with self.get_object(), with a
+    response rendered by a template.
+    Add current url of site to context and redirect to
+    the previous URL after successfully delete .
+    """
+    model = models.TrainingPlanName
+    success_message = 'Delete successfully!'
+    template_name = 'training/trainingplan_confirm_delete.html'
+    permission_required = 'training.delete_trainingplanname'
+    raise_exception = True
+    success_url = reverse_lazy('training:list')
+
