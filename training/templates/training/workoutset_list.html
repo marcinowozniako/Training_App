@@ -52,10 +52,12 @@
     <thead>
             <tr class="d-flex">
                 <th class="col-6">
-                    <a class="nav-link text-start" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}">Previous Week</a>
+
+                    <a class="nav-link text-start col-4" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}">Previous Week</a>
 
                 </th>
-                <th class="col-6"><a class="nav-link text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}">Next Week</a></th>
+                <th class="col-6 text-end">
+                    <a class="nav-link col-3 text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}">Next Week</a></th>
             </tr>
             </thead>
     </table>
