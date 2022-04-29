@@ -11,9 +11,13 @@ if (document.title === 'Training Log Workout List') {
     }).on('changeDate', function (ev) {
         $('#id_date').change(function () {
             const change = $('#id_date').val($.datepicker.iso8601Week(new Date($('#id_date').val())))
-            location.href = change.val();
+            const url = location.href.split('/')
+            url[6] = ev.date.getFullYear().toString()
+            url[7] = change.val()
+            location.href = url.join('/')
         })
     })
+
 
 
 //     $('#id_date').datepicker( {
