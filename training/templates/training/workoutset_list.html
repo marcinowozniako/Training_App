@@ -57,9 +57,8 @@
 
                 </th>
                 <th class="col-2"></th>
-                <th class="col-4">
-                <input type="text" name="date" class="textinput textInput form-control text-center" id="id_date">
-                <input type="hidden" id="weekNumber">
+                <th class="col-4" id="test">
+                <input type="text" name="date" class="textinput textInput form-control text-center" id="id_date" placeholder="Choose Date">
                 <th class="col-2"></th>
                     <th class="col-2">
                     <a class="nav-link text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}">Next Week</a></th></th>

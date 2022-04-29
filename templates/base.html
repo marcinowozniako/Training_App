@@ -8,13 +8,14 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Training Log{% block title %}{% endblock %}</title>
-        {{ form.media.css }}
+    {{ form.media.css }}
     {% block sripts %}
         {% if messages %}
             <script src="{% static 'scripts/messages.js' %}" defer async></script>
         {% endif %}
         <script src="{% static 'scripts/jquery.min.js' %}"></script>
         <script src="{% static 'scripts/jquery-ui.min.js' %}"></script>
+        <script src="{% static 'scripts/bootstrap-datepicker.min.js' %}"></script>
         <script src="{% static 'scripts/select2.full.min.js' %}"></script>
         <script src="{% static 'scripts/moment.js' %}"></script>
         <script src="{% static 'scripts/bootstrap.min.js' %}" defer async></script>
@@ -24,6 +25,7 @@
     {% endblock %}
     {% block styles %}
         <link rel="stylesheet" href="{% static 'styles/main.css' %}">
+
     {% endblock %}
 </head>
 <body>
@@ -33,7 +35,7 @@
     <div class="row">
         <div class="col-12 col-md-9">
             {% block container %}
-            {{ form.media.js }}
+                {{ form.media.js }}
             {% endblock %}
         </div>
         <div class="col-12 col-md-3">
