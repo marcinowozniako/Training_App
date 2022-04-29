@@ -1,5 +1,7 @@
+@import "jquery-ui.min.css";
 @import 'bootstrap.min.css';
 @import "select2.min.css";
+
 
 .logo {
     width: 2rem;
@@ -13,4 +15,8 @@
 }
 .select2-container{
     width: 100% !important;
+}
+
+.ui-datepicker-calendar tbody tr:hover {
+    background-color: #ffc107 !important;
 }

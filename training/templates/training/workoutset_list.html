@@ -51,12 +51,16 @@
             <table class="table">
     <thead>
             <tr class="d-flex">
-                <th class="col-6">
+                <th class="col-2">
 
-                    <a class="nav-link text-start col-4" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}">Previous Week</a>
+                    <a class="nav-link text-start" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}">Previous Week</a>
 
                 </th>
+                <th class="col-2"></th>
                 <th class="col-4">
+                <input type="text" name="date" class="textinput textInput form-control text-center" id="id_date">
+                <input type="hidden" id="weekNumber">
+                <th class="col-2"></th>
                     <th class="col-2">
                     <a class="nav-link text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}">Next Week</a></th></th>
             </tr>
