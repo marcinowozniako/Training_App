@@ -1,4 +1,7 @@
+{% if training_filtered.count > 0 %}
 <option value="">---------</option>
 {% for training in training_filtered %}
-<option value="{{ training.training_plan_name.id }}">{{ training.name }}</option>
+<option value="{{ training.id }}">{{ training.name }}</option>
+
 {% endfor %}
+{% endif %}

@@ -7,14 +7,15 @@
     {% endblock %}
     {% block container %}
         <h1>Create Training Plan</h1>
-              {% if messages %}
-                  {{ message|safe }}
-{#     {% for message in messages %}#}
-{#         <div class="text-center alert alert-{{ message.tags }}">#}
-{#             {{ message|safe }}#}
-{#         </div>#}
-{#     {% endfor %}#}
+        {% if messages %}
+
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
  {% endif %}
+{# {% endif %}#}
 
         <form action="" method="post" id="Trainingplanform" training-url="{% url 'training:ajax_load_training' %}" novalidate>
 

@@ -88,14 +88,43 @@ class CreateTrainingPlanView(BaseCreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-
         return super().form_valid(form)
+
+    # def form_invalid(self, form, **kwargs):
+    #     training_id = int(self.request.POST.get('training_plan_name'))
+    #     form.fields['training'].queryset = models.Training.objects.filter(
+    #         training_plan_name_id=training_id)
+    #     # ctx = self.get_context_data(**kwargs)
+    #     # form.fields['training'].queryset = models.Training.objects.none()
+    #     # form.instance.training = self.request.POST.get('training_plan_name')
+    #     # form.data = form.data.copy()
+    #     # form.data['training'] = models.Training.objects.filter(
+    #     #     training_plan_name_id=training_id)
+    #     # ctx['form'] = form
+    #     # return self.render_to_response(ctx)
+    #
+    #     if 'training_plan_name' in self.request.POST:
+    #
+    #
+    #
+    #     # except (ValueError, TypeError):
+    #     #         pass  # invalid input from the client; ignore and fallback to empty City queryset
+    #     # else:
+    #     #     form.fields['training'].queryset = models.Training.objects.none()
+    #
+    #     return super().form_invalid(form)
 
     def get_form(self, form_class=None):
         url = reverse_lazy('training:create-training')
         url1 = reverse_lazy('training:create-training-plan-name')
         url3 = reverse_lazy('training:create-exercise')
         form = super().get_form(form_class=None)
+        # form.fields['training'] = forms.ChoiceField(disabled=True)
+        # form.fields['training'].queryset = models.Training.objects.none()
+
+        # elif form.instance.pk:
+        #     form.fields['training'].queryset = form.instance.country.city_set.order_by('name')
+
         if form.fields['exercise_name'].queryset.all().count() >= 1:
             form.fields['exercise_name'].queryset = form.fields['exercise_name'].queryset.all()
         else:
@@ -103,9 +132,9 @@ class CreateTrainingPlanView(BaseCreateView):
                 f"<a href='{url3}'> You Need to Add Exercise First!</a>"), disabled=True)
         if form.fields['training'].queryset.filter(owner=self.request.user).count() >= 1:
             form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
-        else:
-            form.fields['training'] = forms.ChoiceField(help_text=mark_safe(
-                f"<a href='{url}'> You Need to Add Training First!</a>"), disabled=True)
+        # else:
+        #     form.fields['training'] = forms.ChoiceField(help_text=mark_safe(
+        #         f"<a href='{url}'> You Need to Add Training First!</a>"), disabled=True)
         if form.fields['training_plan_name'].queryset.filter(
                 owner=self.request.user).count() >= 1:
             form.fields['training_plan_name'].queryset = form.fields['training_plan_name'].queryset.filter(
