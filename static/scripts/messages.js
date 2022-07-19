@@ -1,5 +1,4 @@
 const messages = document.getElementsByClassName('alert')
-console.log(messages)
 
 setTimeout(function (){
     messages[0].classList.add('fade')

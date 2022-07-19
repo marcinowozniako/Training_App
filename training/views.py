@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DetailView, UpdateView, ListView, DeleteView, WeekArchiveView
@@ -36,7 +37,7 @@ class CreateTrainingView(BaseCreateView):
     If the form is valid, add the current logged user as owner and redirect to the supplied URL.
     """
     model = models.Training
-    fields = ('name', 'description')
+    fields = ('name', 'description', 'training_plan_name')
     template_name = 'training/create_training.html'
     permission_required = 'training.add_training'
     success_url = reverse_lazy('training:create-training')
@@ -60,6 +61,12 @@ class CreateTrainingPlanNameView(BaseCreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+def load_training_for_selected_training_plan(request):
+    training_plan_name_id = request.GET.get('training_plan_name')
+    training_filtered = models.Training.objects.filter(training_plan_name_id=training_plan_name_id)
+    return render(request, 'training_dropdown.html', {'training_filtered': training_filtered})
 
 
 class CreateTrainingPlanView(BaseCreateView):
@@ -351,4 +358,3 @@ class DeleteTrainingPlanNameView(SuccessMessageMixin, PermissionRequiredMixin, D
     permission_required = 'training.delete_trainingplanname'
     raise_exception = True
     success_url = reverse_lazy('training:list')
-

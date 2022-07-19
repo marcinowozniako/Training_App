@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for training in training_filtered %}
+<option value="{{ training.training_plan_name.id }}">{{ training.name }}</option>
+{% endfor %}

@@ -34,6 +34,7 @@ class Training(models.Model):
     description = models.TextField(blank=True, null=True)
     exercises = models.ManyToManyField('Exercises', through='TrainingPlan')
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    training_plan_name = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ['id']
