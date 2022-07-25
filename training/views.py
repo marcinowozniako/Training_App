@@ -136,7 +136,8 @@ class CreateTrainingPlanView(BaseCreateView):
             form.fields['exercise_name'] = forms.ChoiceField(help_text=mark_safe(
                 f"<a href='{url3}'> You Need to Add Exercise First!</a>"), disabled=True)
         if form.fields['training'].queryset.filter(owner=self.request.user).count() >= 1:
-            form.fields['training'].queryset = form.fields['training'].queryset.filter(owner=self.request.user)
+            form.fields['training'].queryset = form.fields['training'].queryset.filter(
+                 owner=self.request.user)
         # else:
         #     form.fields['training'] = forms.ChoiceField(help_text=mark_safe(
         #         f"<a href='{url}'> You Need to Add Training First!</a>"), disabled=True)
@@ -349,26 +350,17 @@ class WorkoutListView(WeekArchiveView, PermissionRequiredMixin, ListView):
         #         new_data[e.exercise] = [e]
         #     else:
         #         new_data[e.exercise].append(e)
-        qs = self.model.objects.filter(
-            training_plan_name=self.request.GET.get('training_plan_name'),
-            owner=self.request.user)
-
-        return qs
+        if self.request.GET.get('training_plan_name') != '':
+            qs = self.model.objects.filter(
+                training_plan_name=self.request.GET.get('training_plan_name'),
+                owner=self.request.user)
+            return qs
+        else:
+            return self.model.objects.none()
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['choose'] = filters.SnippetFilter(self.request.GET, request=self.request, queryset=self.get_queryset())
-        data = self.model.objects.filter(
-            training_plan_name=self.request.GET.get('training_plan_name'),
-            owner=self.request.user).order_by('date', 'exercise__trainingplan__order', 'exercise__name',
-                                              ).values_list('exercise', 'date', 'day', 'sets', 'reps', 'reps_unit',
-                                                            'weight', 'total_weight', 'weight_unit',
-                                                            ).distinct()
-        new_data = {}
-        for exercise in data:
-            new_data[exercise] = models.WorkoutSet.objects.filter(exercise=exercise)
-
-        ctx['test'] = new_data
         return ctx
 
     # def get_context_data(self, *, object_list=None, **kwargs):
