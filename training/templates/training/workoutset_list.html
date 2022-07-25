@@ -2,11 +2,25 @@
 {% load embed_video_tags %}
 {% load crispy_forms_tags %}
 {% load custom_time_tags  %}
+{#        {% week_nb as cr_week %}#}
+{#      {% year_nb as cr_year %}#}
 {% block title %}
+    {% if object %}
+    Workout List Update
+    {% endif %}
     Workout List
 {% endblock %}
 {% block container %}
+        {% if choose.form != None %}
+            <form method="GET">
+            <h1 class="text-center">Workout List</h1>
+        {{ choose.form|crispy }}
+            <input type="submit" value="Choose" class="btn btn-primary rounded-0 text-light m-1">
+            <a href="{% url 'training:workout-list' week|date:'Y' week|date:'W' %}"
+                               class="btn btn-danger rounded-0 text-light m-1">Clear</a>
         <h1>Workout List</h1>
+            </form>
+    {% endif %}
     {{ week_nb }}
     {% if messages %}
 
@@ -17,7 +31,16 @@
      {% endfor %}
  {% endif %}
     {% if object %}
-    <form method="post">{% csrf_token %}
+        {% if messages %}
+
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
+    <form method="post">
+        {% csrf_token %}
     <table class="table">
     <thead>
                 <tr class="d-flex">
@@ -39,12 +62,13 @@
                         <div class="d-none">
                         <input type="hidden" value="{{ form.weight_unit|as_crispy_field }}">
                             <div class="d-none">
-                        <input type="hidden" value="{{ form.day|as_crispy_field }}"></div></div></div></div>
+                        <input type="hidden" value="{{ form.training_plan_name|as_crispy_field }}"></div></div></div></div>
                     </tr>
                 </tbody>
     </table>
     <input type="hidden" name="next" value="{{ id }}">
-    <input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1">
+{#    <input type="submit" value="Update" class="btn btn-primary rounded-0 text-light m-1">#}
+    <button type="submit" class="btn btn-primary rounded-0 text-light m-1">Update</button>
     </form>
     {% endif %}
     {% if workoutset_list != null %}
@@ -53,7 +77,7 @@
             <tr class="d-flex">
                 <th class="col-2">
 
-                    <a class="nav-link text-start" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}">Previous Week</a>
+                    <a class="nav-link text-start" href="{% url 'training:workout-list' previous_week|date:'Y' previous_week|date:'W' %}?training_plan_name={{ request.GET.training_plan_name }}">Previous Week</a>
 
                 </th>
                 <th class="col-2"></th>
@@ -61,11 +85,13 @@
                 <input type="text" name="date" class="textinput textInput form-control text-center" id="id_date" placeholder="Choose Date">
                 <th class="col-2"></th>
                     <th class="col-2">
-                    <a class="nav-link text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}">Next Week</a></th></th>
+                    <a class="nav-link text-end" href="{% url 'training:workout-list' next_week|date:'Y' next_week|date:'W' %}?training_plan_name={{ request.GET.training_plan_name }}">Next Week</a></th>
             </tr>
             </thead>
     </table>
          <table class="table">
+
+
             {% regroup workoutset_list by date as days %}
             {% for date in days %}
                 <thead>
@@ -87,6 +113,8 @@
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
+                {% regroup date.list by exercise.name as axez %}
+
                 {% for exercise in date.list %}
 
                     <tr class="d-flex">
@@ -105,7 +133,12 @@
                         </td>
                     </tr>
 
-                {% endfor %}
+
+                        {% endfor %}
+
+
+
+
                 {% empty %}
                     <h3 class="text-center">There is no workout yet</h3>
                 <p class="text-center">Add new one: <a class="text-center" href="{% url 'training:workout' %}">Add Workout</a></p>

@@ -81,9 +81,17 @@ class WorkoutSet(models.Model):
     total_weight = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     weight_unit = models.CharField(max_length=15, choices=WeightUnit.CHOICES)
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    training_plan_name = models.ForeignKey('TrainingPlanName', on_delete=models.CASCADE, null=True)
+    order = models.IntegerField(default=1)
 
     def __str__(self):
         return self.exercise.name
 
+    def save(self, *args, **kwargs):
+        qs = TrainingPlan.objects.filter(exercise_name=self.exercise, training_plan_name=self.training_plan_name)
+        order = qs.get()
+        self.order = order.order
+        super().save(*args, **kwargs)
+
     class Meta:
-        ordering = ['date']
+        ordering = ['date', 'order']

@@ -19,7 +19,8 @@ if (document.title === 'Training Log Workout List') {
     })
     }
 
-$("#id_training_plan_name").change(function () {
+if (document.title === 'Training Log Create Training Plan'){
+    $("#id_training_plan_name").change(function () {
     const url = $("#Trainingplanform").attr("training-url");  // get the url of the `load_cities` view
     const trainingId = $(this).val();
     // get the selected country ID from the HTML input
@@ -42,6 +43,9 @@ $("#id_training_plan_name").change(function () {
         $('#id_training').empty()
     }
     });
+}
+
+
 
 
 

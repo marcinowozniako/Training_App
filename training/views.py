@@ -46,6 +46,11 @@ class CreateTrainingView(BaseCreateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['training_plan_name'].queryset = models.TrainingPlanName.objects.filter(owner=self.request.user)
+        return form
+
 
 class CreateTrainingPlanNameView(BaseCreateView):
     """
@@ -261,8 +266,13 @@ class AddWorkoutView(BaseCreateView):
     Change the type of field date for date.
     If the form is valid, add the current logged user as owner and redirect to the supplied URL.
     """
+
+    # def get_queryset(self):
+    #     return None
+
     model = models.WorkoutSet
-    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
+    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit',
+              'training_plan_name')
     template_name = 'training/workout.html'
     permission_required = 'training.add_workoutset'
     success_url = reverse_lazy('training:workout')
@@ -276,6 +286,7 @@ class AddWorkoutView(BaseCreateView):
             form.fields['exercise'] = forms.ChoiceField(help_text=mark_safe(
                 f"<a href='{url}'> You Need to Add Exercise First!</a>"), disabled=True)
         form.fields['date'].widget = forms.TextInput(attrs={'type': 'date'})
+        form.fields['training_plan_name'].queryset = models.TrainingPlanName.objects.filter(owner=self.request.user)
         return form
 
     def form_valid(self, form):
@@ -292,7 +303,8 @@ class WorkoutUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView
     the previous URL after successfully edit .
     """
     model = models.WorkoutSet
-    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit')
+    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit',
+              'training_plan_name')
     template_name = 'training/workoutset_list.html'
     success_message = 'Edit successfully!'
     permission_required = 'training.change_workoutset'
@@ -332,8 +344,36 @@ class WorkoutListView(WeekArchiveView, PermissionRequiredMixin, ListView):
     """
 
     def get_queryset(self):
-        return self.model.objects.filter(owner=self.request.user).order_by('date', 'exercise__training',
-                                                                           'exercise__trainingplan__order')
+        # for e in data:
+        #     if e.exercise not in new_data:
+        #         new_data[e.exercise] = [e]
+        #     else:
+        #         new_data[e.exercise].append(e)
+        qs = self.model.objects.filter(
+            training_plan_name=self.request.GET.get('training_plan_name'),
+            owner=self.request.user)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['choose'] = filters.SnippetFilter(self.request.GET, request=self.request, queryset=self.get_queryset())
+        data = self.model.objects.filter(
+            training_plan_name=self.request.GET.get('training_plan_name'),
+            owner=self.request.user).order_by('date', 'exercise__trainingplan__order', 'exercise__name',
+                                              ).values_list('exercise', 'date', 'day', 'sets', 'reps', 'reps_unit',
+                                                            'weight', 'total_weight', 'weight_unit',
+                                                            ).distinct()
+        new_data = {}
+        for exercise in data:
+            new_data[exercise] = models.WorkoutSet.objects.filter(exercise=exercise)
+
+        ctx['test'] = new_data
+        return ctx
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     ctx = super().get_context_data()
+    #     selected = self.request.GET.getlist('')
 
     model = models.WorkoutSet
     permission_required = 'training.view_workoutset'
