@@ -20,4 +20,5 @@ urlpatterns = [
     path('workout/list/<year>/<week>/delete/<pk>', views.DeleteExerciseWorkoutView.as_view(), name='workout_ex-delete'),
     path('list/delete/plan/<pk>', views.DeleteTrainingPlanNameView.as_view(), name='training_plan_name-delete'),
     path('ajax/load-filtered_training/', views.load_training_for_selected_training_plan, name='ajax_load_training'),
+    path('ajax/load-filtered_training1/', views.load_training_for_selected_training, name='ajax_load_training1'),
 ]

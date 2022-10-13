@@ -20,9 +20,15 @@
         {% csrf_token %}
 
         {{ form|crispy }}
+            <input type="hidden" id="Trainingplanform" training-url="{% url 'training:ajax_load_training' %}">
+            <input type="hidden" id="Trainingform" training1-url="{% url 'training:ajax_load_training1' %}">
 
         <button type="submit" class="btn btn-primary">Add</button>
 
         </form>
+{% endblock %}
+{% block aside %}
+        <div id="test">
 
+        </div>
 {% endblock %}

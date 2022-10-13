@@ -1,0 +1,9 @@
+{% if exercise_filtered.count > 0 %}
+<option value="">---------</option>
+{% for exercise in exercise_filtered %}
+<option value="{{ exercise.id }}">{{ exercise.exercise }}</option>
+
+{% endfor %}
+
+
+{% endif %}

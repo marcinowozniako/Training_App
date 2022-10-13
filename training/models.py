@@ -73,6 +73,7 @@ class TrainingPlan(models.Model):
 class WorkoutSet(models.Model):
     date = models.DateField(default=time.strftime("%Y-%m-%d"))
     day = models.ForeignKey('DayName', on_delete=models.CASCADE, default=datetime.datetime.today().weekday() + 1)
+    training = models.ForeignKey('Training', on_delete=models.CASCADE)
     exercise = models.ForeignKey('Exercises', on_delete=models.CASCADE)
     sets = models.PositiveIntegerField()
     reps = models.PositiveIntegerField()

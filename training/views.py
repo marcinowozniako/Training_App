@@ -137,7 +137,7 @@ class CreateTrainingPlanView(BaseCreateView):
                 f"<a href='{url3}'> You Need to Add Exercise First!</a>"), disabled=True)
         if form.fields['training'].queryset.filter(owner=self.request.user).count() >= 1:
             form.fields['training'].queryset = form.fields['training'].queryset.filter(
-                 owner=self.request.user)
+                owner=self.request.user)
         # else:
         #     form.fields['training'] = forms.ChoiceField(help_text=mark_safe(
         #         f"<a href='{url}'> You Need to Add Training First!</a>"), disabled=True)
@@ -260,6 +260,12 @@ class UpdateExerciseView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVie
             return reverse_lazy('home:home')
 
 
+def load_training_for_selected_training(request):
+    training_id = request.GET.get('training_id')
+    exercise_filtered = models.WorkoutSet.objects.filter(training_id=training_id)
+    return render(request, 'exercise_dropdown.html', {'exercise_filtered': exercise_filtered})
+
+
 class AddWorkoutView(BaseCreateView):
     """
     View for creating a new workout object, with a response rendered by a template.
@@ -272,12 +278,17 @@ class AddWorkoutView(BaseCreateView):
     #     return None
 
     model = models.WorkoutSet
-    fields = ('date', 'day', 'exercise', 'sets', 'reps', 'reps_unit', 'weight', 'total_weight', 'weight_unit',
-              'training_plan_name')
+    fields = (
+        'date', 'day', 'training_plan_name', 'training', 'exercise', 'sets', 'reps', 'reps_unit', 'weight',
+        'total_weight', 'weight_unit',
+    )
     template_name = 'training/workout.html'
     permission_required = 'training.add_workoutset'
     success_url = reverse_lazy('training:workout')
 
+    # def get_initial(self):
+    #     initial = super().get_initial()
+    #     initial['exercise'] = self.model.objects.get(training_plan_name__training__=)
     def get_form(self, form_class=None):
         url = reverse_lazy('training:create-exercise')
         form = super().get_form(form_class)
